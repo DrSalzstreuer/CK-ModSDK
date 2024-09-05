@@ -1,6 +1,5 @@
 ﻿using CK_QOL_Collection.Core;
 using CK_QOL_Collection.Features;
-using CK_QOL_Collection.Features.NoDeathPenalty.Patches;
 using CoreLib;
 using CoreLib.Data.Configuration;
 using CoreLib.Localization;
