@@ -1,4 +1,5 @@
 ﻿using CK_QOL_Collection.Core;
+using CK_QOL_Collection.Core.Configuration;
 using CK_QOL_Collection.Features;
 using CoreLib;
 using CoreLib.Data.Configuration;
@@ -21,7 +22,7 @@ namespace CK_QOL_Collection
         /// <summary>
         ///     The version of the mod.
         /// </summary>
-        public const string Version = "1.2.0";
+        public const string Version = "1.3.0";
 
         /// <summary>
         ///     The name of the mod.
@@ -63,11 +64,11 @@ namespace CK_QOL_Collection
             CoreLibMod.LoadModules(typeof(LocalizationModule));
             CoreLibMod.LoadModule(typeof(RewiredExtensionModule));
 
-            _modConfig = Configuration.Initialize(ModInfo);
+            _modConfig = ConfigurationManager.Initialize(ModInfo);
 
             RewiredExtensionModule.rewiredStart += () => RewiredPlayer = ReInput.players.GetPlayer(0);
 
-            if (Configuration.Sections.General.IsEnabled)
+            if (ConfigurationManager.Sections.General.IsEnabled)
             {
                 return;
             }
@@ -82,7 +83,7 @@ namespace CK_QOL_Collection
         /// <inheritdoc />
         public void Init()
         {
-            IsNoDeathPenaltyEnabled = Configuration.Sections.NoDeathPenalty.IsEnabled;
+            IsNoDeathPenaltyEnabled = ConfigurationManager.Sections.NoDeathPenalty.IsEnabled;
             if (IsNoDeathPenaltyEnabled)
             {
                 API.Server.OnWorldCreated += () => FeatureManager.Instance.NoDeathPenalty.Execute();
@@ -115,7 +116,7 @@ namespace CK_QOL_Collection
         /// <inheritdoc />
         public void Update()
         {
-            if (!Configuration.Sections.General.IsEnabled)
+            if (!ConfigurationManager.Sections.General.IsEnabled)
             {
                 return;
             }

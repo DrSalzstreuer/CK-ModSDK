@@ -1,4 +1,5 @@
 ﻿using CK_QOL_Collection.Core;
+using CK_QOL_Collection.Core.Configuration;
 using CK_QOL_Collection.Features.NoDeathPenalty.Patches;
 using PugMod;
 
@@ -15,7 +16,7 @@ namespace CK_QOL_Collection.Features.NoDeathPenalty
 		///		Sets up the No Death Penalty feature using the configuration settings.
 		/// </summary>
 		public Feature()
-			: base(Configuration.Sections.NoDeathPenalty.Name, Configuration.Sections.NoDeathPenalty.IsEnabled)
+			: base(ConfigurationManager.Sections.NoDeathPenalty.Name, ConfigurationManager.Sections.NoDeathPenalty.IsEnabled)
 		{
 		}
 

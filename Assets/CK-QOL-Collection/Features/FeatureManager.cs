@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CK_QOL_Collection.Features.CraftingRange;
 
 namespace CK_QOL_Collection.Features
 {
@@ -10,16 +11,16 @@ namespace CK_QOL_Collection.Features
     internal class FeatureManager
     {
         /// <summary>
-        ///     A list of all features managed by the <see cref="FeatureManager" />.
+        ///     A dictionary to hold all features managed by the <see cref="FeatureManager" />.
         /// </summary>
-        private readonly List<IFeature> _features = new();
+        private readonly Dictionary<string, IFeature> _features = new();
 
         /// <summary>
         ///     Updates all managed features by calling their <see cref="IFeature.Update" /> method.
         /// </summary>
         public void Update()
         {
-            foreach (var feature in _features)
+            foreach (var feature in _features.Values)
             {
                 feature.Update();
             }
@@ -36,17 +37,13 @@ namespace CK_QOL_Collection.Features
         /// <summary>
         ///     Initializes a new instance of the <see cref="FeatureManager" /> class.
         ///     The constructor is private to prevent instantiation outside of this class.
-        ///     Initializes the features using lazy loading and adds them to the feature list.
         /// </summary>
         private FeatureManager()
         {
-            _craftingRange = new Lazy<CraftingRange.Feature>(() => new CraftingRange.Feature());
-            _quickStash = new Lazy<QuickStash.Feature>(() => new QuickStash.Feature());
-            _noDeathPenalty = new Lazy<NoDeathPenalty.Feature>(() => new NoDeathPenalty.Feature());
-
-            _features.Add(CraftingRange);
-            _features.Add(QuickStash);
-            _features.Add(NoDeathPenalty);
+            RegisterFeature(new Feature());
+            RegisterFeature(new QuickStash.Feature());
+            RegisterFeature(new NoDeathPenalty.Feature());
+            RegisterFeature(new ItemPickUpNotifier.Feature());
         }
 
         /// <summary>
@@ -56,39 +53,50 @@ namespace CK_QOL_Collection.Features
 
         #endregion Singleton
 
-        #region Feature Instances
+        #region Feature Management
 
         /// <summary>
-        ///     A lazily initialized <see cref="CraftingRange.Feature" /> instance representing the crafting range
-        ///     feature.
+        ///     Registers a feature with the feature manager.
         /// </summary>
-        private readonly Lazy<CraftingRange.Feature> _craftingRange;
+        /// <param name="feature">The feature to register.</param>
+        private void RegisterFeature(IFeature feature)
+        {
+            if (feature != null)
+            {
+                _features.TryAdd(feature.Name, feature);
+            }
+        }
 
         /// <summary>
-        ///     Gets the <see cref="CraftingRange.Feature" /> instance that manages crafting range functionality.
+        ///     Gets a specific feature by its name.
         /// </summary>
-        internal CraftingRange.Feature CraftingRange => _craftingRange.Value;
+        /// <param name="featureName">The name of the feature.</param>
+        /// <returns>The corresponding <see cref="IFeature" /> instance.</returns>
+        internal IFeature GetFeature(string featureName)
+        {
+            return _features.GetValueOrDefault(featureName);
+        }
 
         /// <summary>
-        ///     A lazily initialized <see cref="QuickStash.Feature" /> instance representing the quick stash feature.
+        ///     Gets a specific feature by its type.
         /// </summary>
-        private readonly Lazy<QuickStash.Feature> _quickStash;
+        /// <typeparam name="T">The type of the feature.</typeparam>
+        /// <returns>The corresponding feature instance of type <typeparamref name="T" />.</returns>
+        internal T GetFeature<T>() 
+            where T : class, IFeature
+        {
+            foreach (var feature in _features.Values)
+            {
+                if (feature is T typedFeature)
+                {
+                    return typedFeature;
+                }
+            }
+            
+            return null;
+        }
 
-        /// <summary>
-        ///     Gets the <see cref="QuickStash.Feature" /> instance that manages quick stash functionality.
-        /// </summary>
-        internal QuickStash.Feature QuickStash => _quickStash.Value;
+        #endregion Feature Management
 
-        /// <summary>
-        ///     A lazily initialized <see cref="NoDeathPenalty.Feature" /> instance representing the no death penalty feature.
-        /// </summary>
-        private readonly Lazy<NoDeathPenalty.Feature> _noDeathPenalty;
-
-        /// <summary>
-        ///     Gets the <see cref="NoDeathPenalty.Feature" /> instance that manages no death penalty functionality.
-        /// </summary>
-        internal NoDeathPenalty.Feature NoDeathPenalty => _noDeathPenalty.Value;
-        
-        #endregion Feature Instances
     }
 }

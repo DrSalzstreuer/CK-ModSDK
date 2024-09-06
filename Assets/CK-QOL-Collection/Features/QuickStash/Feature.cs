@@ -1,52 +1,46 @@
-﻿using System.Collections.Generic;
-using CK_QOL_Collection.Core;
+﻿using CK_QOL_Collection.Core;
+using CK_QOL_Collection.Core.Configuration;
 using CK_QOL_Collection.Core.Helpers;
 using Rewired;
 
 namespace CK_QOL_Collection.Features.QuickStash
 {
     /// <summary>
-    ///     Represents the Quick Stash feature of the mod.
-    ///     This feature allows players to quickly stash items into nearby chests.
+    /// Represents the Quick Stash feature of the mod.
+    /// This feature allows players to quickly stash items into nearby chests.
     /// </summary>
     internal class Feature : FeatureBase
     {
-        /// <summary>
-        ///     The Rewired player object used for detecting input.
-        /// </summary>
+        private readonly Configuration _config;
         private readonly Player _rewiredPlayer;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Feature" /> class.
-        ///     Sets up input handling for the Quick Stash feature.
+        /// Initializes a new instance of the <see cref="Feature"/> class.
+        /// Sets up input handling for the Quick Stash feature.
         /// </summary>
         public Feature()
-            : base(Configuration.Sections.QuickStash.Name, Configuration.Sections.QuickStash.IsEnabled)
+            : base(nameof(QuickStash))
         {
+            _config = (Configuration)Configuration;
             _rewiredPlayer = Entry.RewiredPlayer;
         }
 
-        /// <summary>
-        ///     Executes the Quick Stash feature, transferring items from the player's inventory to nearby chests.
-        /// </summary>
+        /// <inheritdoc />
+        public override bool CanExecute() => base.CanExecute()
+            && _rewiredPlayer != null
+            && Manager.main.currentSceneHandler.isInGame
+            && Manager.main.player?.playerInventoryHandler != null;
+
+        /// <inheritdoc />
         public override void Execute()
         {
             if (!CanExecute())
             {
                 return;
             }
-            
-            Manager.ui.ShowDiscoveredItemText(new List<string> { "-CK-QOL-Items/Cow" }, Rarity.Poor);
-            Manager.ui.ShowDiscoveredItemText(new List<string> { "-CK-QOL-Items/CowBaby" }, Rarity.Poor);
-            Manager.ui.ShowDiscoveredItemText(new List<string> { "-CK-QOL-Items/Dresser" }, Rarity.Poor);
-            
-            var player = Manager.main.player;
-            if (player?.playerInventoryHandler == null)
-            {
-                return;
-            }
 
-            var maxDistance = Configuration.Sections.QuickStash.Options.Distance.Value;
+            var player = Manager.main.player;
+            var maxDistance = _config.Distance;
             var nearbyChests = ChestHelper.GetNearbyChests(maxDistance);
 
             // Iterate through the nearby chests and attempt to quick stash items.
@@ -57,26 +51,31 @@ namespace CK_QOL_Collection.Features.QuickStash
                 {
                     continue;
                 }
-                
+
+                // Perform the quick stash action.
                 player.playerInventoryHandler.QuickStack(player, inventoryHandler);
             }
         }
 
-        /// <summary>
-        ///     Updates the state of the Quick Stash feature, checking for input and triggering the feature if appropriate.
-        /// </summary>
+        /// <inheritdoc />
         public override void Update()
         {
-            if (_rewiredPlayer == null || !Manager.main.currentSceneHandler.isInGame)
+            if (!CanExecute())
             {
                 return;
             }
 
             // Check if the Quick Stash key binding has been pressed.
-            if (_rewiredPlayer.GetButtonDown(Configuration.Sections.QuickStash.KeyBinds.QuickStashKeyBindName))
+            if (_rewiredPlayer.GetButtonDown(_config.QuickStashKeyBindName))
             {
                 Execute();
             }
+        }
+
+        /// <inheritdoc />
+        protected override IFeatureKeyBind CreateKeyBind()
+        {
+            return new QuickStashKeyBind();
         }
     }
 }
