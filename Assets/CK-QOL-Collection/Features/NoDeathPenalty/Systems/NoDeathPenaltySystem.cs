@@ -12,8 +12,8 @@ namespace CK_QOL_Collection.Features.NoDeathPenalty.Systems
     [BurstCompile]
     [WorldSystemFilter(WorldSystemFilterFlags.ServerSimulation)]
     [UpdateInGroup(typeof(PredictedSimulationSystemGroup))]
-    [UpdateBefore(typeof(InitMoveInventorySystem))]
     [UpdateAfter(typeof(UpdateHealthSystemGroup))]
+    [UpdateBefore(typeof(InitMoveInventorySystem))]
     public partial class NoDeathPenaltySystem : PugSimulationSystemBase
     {
         /// <summary>

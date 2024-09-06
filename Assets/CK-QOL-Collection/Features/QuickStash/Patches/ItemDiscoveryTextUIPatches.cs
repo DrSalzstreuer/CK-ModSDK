@@ -1,4 +1,5 @@
 using HarmonyLib;
+using PugMod;
 using UnityEngine;
 
 namespace CK_QOL_Collection.Features.QuickStash.Patches
@@ -15,8 +16,10 @@ namespace CK_QOL_Collection.Features.QuickStash.Patches
                 // Continue with the original method execution.
                 return true;
             }
+            
+            
 
-            text = $"Picked Up: {text.Replace("-CK-QOL-", string.Empty)}";
+            text = text.Replace("-CK-QOL-", string.Empty);
             
             __instance.itemDiscoveryUI = itemDiscoveryUI;
             itemDiscoveryUI.activeTexts.Add(__instance);
