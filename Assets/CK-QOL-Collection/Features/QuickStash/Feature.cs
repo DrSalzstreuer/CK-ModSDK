@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using CK_QOL_Collection.Core;
 using CK_QOL_Collection.Core.Helpers;
-using CoreLib.Util;
-using I2.Loc;
 using Rewired;
 
 namespace CK_QOL_Collection.Features.QuickStash
@@ -38,9 +36,9 @@ namespace CK_QOL_Collection.Features.QuickStash
                 return;
             }
             
-            Manager.ui.ShowDiscoveredItemText(new List<string> { "-CK-QOL-Items/Cow" }, Rarity.Legendary);
-            Manager.ui.ShowDiscoveredItemText(new List<string> { "-CK-QOL-Items/CowBaby" }, Rarity.Legendary);
-            Manager.ui.ShowDiscoveredItemText(new List<string> { "-CK-QOL-Items/Dresser" }, Rarity.Legendary);
+            Manager.ui.ShowDiscoveredItemText(new List<string> { "-CK-QOL-Items/Cow" }, Rarity.Poor);
+            Manager.ui.ShowDiscoveredItemText(new List<string> { "-CK-QOL-Items/CowBaby" }, Rarity.Poor);
+            Manager.ui.ShowDiscoveredItemText(new List<string> { "-CK-QOL-Items/Dresser" }, Rarity.Poor);
             
             var player = Manager.main.player;
             if (player?.playerInventoryHandler == null)

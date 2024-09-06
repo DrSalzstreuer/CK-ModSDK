@@ -8,7 +8,7 @@ namespace CK_QOL_Collection.Features.QuickStash.Patches
     {
         [HarmonyPrefix]
         [HarmonyPatch(nameof(ItemDiscoveryTextUI.Activate), typeof(string), typeof(Rarity), typeof(ItemDiscoveryUI))]
-        private static bool ShowDiscoveredItem(ItemDiscoveryTextUI __instance, ref Color ___color, TimerSimple ___activeTimer, string text, Rarity rarity, ItemDiscoveryUI itemDiscoveryUI)
+        private static bool ShowDiscoveredItem(ItemDiscoveryTextUI __instance, ref Color ___color, ref TimerSimple ___activeTimer, string text, Rarity rarity, ItemDiscoveryUI itemDiscoveryUI)
         {
             if (!text.StartsWith("-CK-QOL-"))
             {
