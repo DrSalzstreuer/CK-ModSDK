@@ -19,7 +19,6 @@
         "",
         "",
         "CoreLib",
-        "CoreLib.Resources",
         "CoreLib.RewiredExtension",
         "CoreLib.Localization"
     ],

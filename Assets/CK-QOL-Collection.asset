@@ -19,7 +19,7 @@ MonoBehaviour:
     disableScripts: 0
     accessesExtraAssemblies: 1
     disableHarmonyPatching: 0
-    requiredOn: 0
+    requiredOn: 1
     files:
     - path: Localization/Localization.csv
     - path: Scripts/Features/QuickStash/Feature.cs
@@ -42,8 +42,6 @@ MonoBehaviour:
     - path: Bundles/CK-QOL-Collection_Linux.assetbundle
     dependencies:
     - modName: CoreLib
-      required: 1
-    - modName: CoreLib.Resources
       required: 1
     - modName: CoreLib.RewiredExtension
       required: 1

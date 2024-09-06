@@ -1,10 +1,8 @@
 ﻿using CK_QOL_Collection.Core;
 using CK_QOL_Collection.Features;
-using CK_QOL_Collection.Features.NoDeathPenalty.Patches;
 using CoreLib;
 using CoreLib.Data.Configuration;
 using CoreLib.Localization;
-using CoreLib.ModResources;
 using CoreLib.RewiredExtension;
 using CoreLib.Util.Extensions;
 using PugMod;
@@ -23,7 +21,11 @@ namespace CK_QOL_Collection
         /// <summary>
         ///     The version of the mod.
         /// </summary>
+<<<<<<< Updated upstream
         public const string Version = "1.0.1";
+=======
+        public const string Version = "1.2.1";
+>>>>>>> Stashed changes
 
         /// <summary>
         ///     The name of the mod.
@@ -60,9 +62,8 @@ namespace CK_QOL_Collection
                 return;
             }
 
-            ResourcesModule.RegisterBundles(ModInfo);
-            CoreLibMod.LoadModule(typeof(RewiredExtensionModule));
             CoreLibMod.LoadModules(typeof(LocalizationModule));
+            CoreLibMod.LoadModule(typeof(RewiredExtensionModule));
 
             _modConfig = Configuration.Initialize(ModInfo);
 
