@@ -22,6 +22,8 @@ MonoBehaviour:
     requiredOn: 1
     files:
     - path: Localization/Localization.csv
+    - path: Scripts/Features/QuickStash/Patches/ItemDiscoveryUIPatches.cs
+    - path: Scripts/Features/QuickStash/Patches/ItemDiscoveryTextUIPatches.cs
     - path: Scripts/Features/QuickStash/Feature.cs
     - path: Scripts/Features/NoDeathPenalty/Systems/NoDeathPenaltySystem.cs
     - path: Scripts/Features/NoDeathPenalty/Patches/InventoryCreatePatches.cs
