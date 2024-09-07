@@ -1,32 +1,37 @@
-﻿using CK_QOL_Collection.Core;
+﻿using System.Collections.Generic;
+using CK_QOL_Collection.Core;
 using CK_QOL_Collection.Core.Configuration;
 using CK_QOL_Collection.Core.Helpers;
+using CK_QOL_Collection.Features.QuickStash.KeyBinds;
 using Rewired;
 
 namespace CK_QOL_Collection.Features.QuickStash
 {
     /// <summary>
-    /// Represents the Quick Stash feature of the mod.
-    /// This feature allows players to quickly stash items into nearby chests.
+    ///     Represents the 'Quick Stash' feature of the mod.
+    ///     This feature allows players to quickly stash items into nearby chests.
     /// </summary>
-    internal class Feature : FeatureBase
+    internal class QuickStashFeature : FeatureBase
     {
-        private readonly Configuration _config;
+        private readonly QuickStashConfiguration _config;
         private readonly Player _rewiredPlayer;
+        private readonly string _keyBindName;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Feature"/> class.
-        /// Sets up input handling for the Quick Stash feature.
+        ///     Initializes a new instance of the <see cref="QuickStashFeature" /> class.
+        ///     Sets up input handling for the 'Quick Stash' feature.
         /// </summary>
-        public Feature()
+        public QuickStashFeature()
             : base(nameof(QuickStash))
         {
-            _config = (Configuration)Configuration;
+            _config = (QuickStashConfiguration)Configuration;
             _rewiredPlayer = Entry.RewiredPlayer;
+            _keyBindName = KeyBindManager.Instance.GetKeyBind<QuickStashKeyBind>()?.KeyBindName ?? string.Empty;
         }
 
         /// <inheritdoc />
-        public override bool CanExecute() => base.CanExecute()
+        public override bool CanExecute() =>
+            base.CanExecute()
             && _rewiredPlayer != null
             && Manager.main.currentSceneHandler.isInGame
             && Manager.main.player?.playerInventoryHandler != null;
@@ -65,17 +70,10 @@ namespace CK_QOL_Collection.Features.QuickStash
                 return;
             }
 
-            // Check if the Quick Stash key binding has been pressed.
-            if (_rewiredPlayer.GetButtonDown(_config.QuickStashKeyBindName))
+            if (_rewiredPlayer.GetButtonDown(_keyBindName))
             {
                 Execute();
             }
-        }
-
-        /// <inheritdoc />
-        protected override IFeatureKeyBind CreateKeyBind()
-        {
-            return new QuickStashKeyBind();
         }
     }
 }

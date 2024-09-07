@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Collections.Generic;
+using CK_QOL_Collection.Features.CraftingRange;
+using CK_QOL_Collection.Features.ItemPickUpNotifier;
+using CK_QOL_Collection.Features.NoDeathPenalty;
+using CK_QOL_Collection.Features.QuickStash;
 using CoreLib.Data.Configuration;
 using PugMod;
 
@@ -14,11 +15,6 @@ namespace CK_QOL_Collection.Core.Configuration
     internal static class ConfigurationManager
     {
         /// <summary>
-        ///     The prefix used for all keybinds associated with this mod.
-        /// </summary>
-        internal const string KeybindPrefix = "CK_QOL";
-
-        /// <summary>
         ///     Dictionary to hold feature configuration sections dynamically.
         /// </summary>
         private static readonly Dictionary<string, IFeatureConfiguration> FeatureConfigurations = new();
@@ -26,7 +22,12 @@ namespace CK_QOL_Collection.Core.Configuration
         /// <summary>
         ///     Gets the configuration file used to store and manage settings for the mod.
         /// </summary>
-        internal static ConfigFile ConfigFile { get; private set; }
+        private static ConfigFile ConfigFile { get; set; }
+
+        /// <summary>
+        ///     Gets a value indicating whether the general mod configuration is enabled.
+        /// </summary>
+        public static bool IsModEnabled => GetGeneralConfiguration()?.Enabled ?? false;
 
         /// <summary>
         ///     Initializes the configuration settings for the mod.
@@ -35,12 +36,10 @@ namespace CK_QOL_Collection.Core.Configuration
         /// <returns>The initialized <see cref="ConfigFile" /> instance containing the mod's configuration.</returns>
         internal static ConfigFile Initialize(LoadedMod modInfo)
         {
-            ConfigFile = new ConfigFile($"{Entry.Name}/{Entry.Name}.cfg", true, modInfo);
+            ConfigFile = new ConfigFile($"{ModSettings.Name}/{ModSettings.Name}.cfg", true, modInfo);
 
-            // Dynamically load feature configurations
             LoadFeatureConfigurations();
 
-            // Bind all feature configurations
             foreach (var featureConfig in FeatureConfigurations.Values)
             {
                 featureConfig.BindSettings(ConfigFile);
@@ -50,19 +49,24 @@ namespace CK_QOL_Collection.Core.Configuration
         }
 
         /// <summary>
-        ///     Dynamically loads feature configurations into the FeatureConfigurations dictionary.
+        ///     Loads feature configurations into the FeatureConfigurations dictionary manually.
         /// </summary>
         private static void LoadFeatureConfigurations()
         {
-            var featureConfigTypes = Assembly.GetExecutingAssembly()
-                .GetTypes()
-                .Where(t => typeof(IFeatureConfiguration).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
+            var generalConfig = new GeneralConfiguration();
+            FeatureConfigurations[generalConfig.SectionName] = generalConfig;
 
-            foreach (var type in featureConfigTypes)
-            {
-                var instance = (IFeatureConfiguration)Activator.CreateInstance(type);
-                FeatureConfigurations[instance.SectionName] = instance;
-            }
+            var craftingRangeConfig = new CraftingRangeConfiguration();
+            FeatureConfigurations[craftingRangeConfig.SectionName] = craftingRangeConfig;
+
+            var quickStashConfig = new QuickStashConfiguration();
+            FeatureConfigurations[quickStashConfig.SectionName] = quickStashConfig;
+
+            var noDeathPenaltyConfig = new NoDeathPenaltyConfiguration();
+            FeatureConfigurations[noDeathPenaltyConfig.SectionName] = noDeathPenaltyConfig;
+
+            var itemPickUpNotifierConfig = new ItemPickUpNotifierConfiguration();
+            FeatureConfigurations[itemPickUpNotifierConfig.SectionName] = itemPickUpNotifierConfig;
         }
 
         /// <summary>
@@ -70,9 +74,16 @@ namespace CK_QOL_Collection.Core.Configuration
         /// </summary>
         /// <param name="sectionName">The section name of the feature configuration.</param>
         /// <returns>The corresponding <see cref="IFeatureConfiguration" /> instance.</returns>
-        internal static IFeatureConfiguration GetFeatureConfiguration(string sectionName)
-        {
-            return FeatureConfigurations.GetValueOrDefault(sectionName);
-        }
+        internal static IFeatureConfiguration GetFeatureConfiguration(string sectionName) 
+            => FeatureConfigurations.GetValueOrDefault(sectionName);
+
+        /// <summary>
+        ///     Gets the general configuration section.
+        /// </summary>
+        /// <returns>The <see cref="GeneralConfiguration"/> instance if it exists; otherwise, null.</returns>
+        private static GeneralConfiguration GetGeneralConfiguration()
+            => FeatureConfigurations.TryGetValue("General", out var config) 
+                ? config as GeneralConfiguration 
+                : null;
     }
 }

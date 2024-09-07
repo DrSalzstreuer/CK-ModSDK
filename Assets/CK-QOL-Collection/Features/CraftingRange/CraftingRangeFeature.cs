@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CK_QOL_Collection.Core;
 using CK_QOL_Collection.Core.Helpers;
 
 namespace CK_QOL_Collection.Features.CraftingRange
@@ -8,19 +9,19 @@ namespace CK_QOL_Collection.Features.CraftingRange
     ///     Represents the 'Crafting Range' feature of the mod.
     ///     This feature allows players to interact with chests within a specified range.
     /// </summary>
-    internal class Feature : FeatureBase
-    {
-        private readonly Configuration _config;
+    internal class CraftingRangeFeature : FeatureBase
+	{
+		private readonly CraftingRangeConfiguration _config;
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Feature" /> class.
+        ///     Initializes a new instance of the <see cref="CraftingRangeFeature" /> class.
         ///     Sets up the 'Crafting Range' feature using the configuration settings.
         /// </summary>
-        public Feature()
-            : base(nameof(CraftingRange))
-        {
-            _config = (Configuration)Configuration;
-        }
+        public CraftingRangeFeature()
+			: base(nameof(CraftingRange))
+		{
+			_config = (CraftingRangeConfiguration)Configuration;
+		}
 
         /// <summary>
         ///     Gets the list of nearby chests that are within the crafting range.
@@ -35,22 +36,22 @@ namespace CK_QOL_Collection.Features.CraftingRange
         ///     This limit is currently set to 8 due to restrictions in the game logic.
         /// </remarks>
         public override void Execute()
-        {
-            if (!CanExecute())
-            {
-                return;
-            }
+		{
+			if (!CanExecute())
+			{
+				return;
+			}
 
-            NearbyChests.Clear();
+			NearbyChests.Clear();
 
-            var maxDistance = _config.Distance;
-            var chestLimit = _config.ChestLimit;
+			var maxDistance = _config.Distance;
+			var chestLimit = _config.ChestLimit;
 
-            var nearbyChests = ChestHelper.GetNearbyChests(maxDistance)
-                .Take(chestLimit)
-                .ToList();
+			var nearbyChests = ChestHelper.GetNearbyChests(maxDistance)
+				.Take(chestLimit)
+				.ToList();
 
-            NearbyChests.AddRange(nearbyChests);
-        }
-    }
+			NearbyChests.AddRange(nearbyChests);
+		}
+	}
 }

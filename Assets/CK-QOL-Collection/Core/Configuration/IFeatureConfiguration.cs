@@ -6,7 +6,7 @@ namespace CK_QOL_Collection.Core.Configuration
     ///     Interface for feature configuration settings.
     /// </summary>
     internal interface IFeatureConfiguration
-    {
+	{
         /// <summary>
         ///     Gets the section name of the configuration.
         /// </summary>
@@ -16,11 +16,11 @@ namespace CK_QOL_Collection.Core.Configuration
         ///     Gets a value indicating whether the feature is enabled.
         /// </summary>
         bool Enabled { get; }
-        
+
         /// <summary>
         ///     Binds settings for this feature configuration.
         /// </summary>
         /// <param name="configFile">The configuration file to bind settings to.</param>
         void BindSettings(ConfigFile configFile);
-    }
+	}
 }
