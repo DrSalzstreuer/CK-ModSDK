@@ -125,7 +125,7 @@ namespace CK_QOL.Features.QuickEat
         private bool TryFindEatable(PlayerController player)
         {
             _previousSlotIndex = player.equippedSlotIndex;
-			_fromSlotIndex = -1;
+            _fromSlotIndex = -1;
 
             // Check if there's an eatable item in the predefined slot.
             if (IsEatable(player.playerInventoryHandler.GetObjectData(EquipmentSlotIndex)))
@@ -155,6 +155,8 @@ namespace CK_QOL.Features.QuickEat
 
 			if (_fromSlotIndex > -1)
 			{
+                // Store the slot we're swapping from.
+                _fromSlotIndex = playerInventoryIndex;
                 // Swap the item to the eatable slot.
 				player.playerInventoryHandler.Swap(player, _fromSlotIndex, player.playerInventoryHandler, EquipmentSlotIndex);
                 return true;
@@ -214,6 +216,9 @@ namespace CK_QOL.Features.QuickEat
 			}
 
             EntityUtility.SetComponentData(player.entity, player.world, inputHistoryConsume);
+
+            // Swap the original item back to the eatable slot we used
+            if (_fromSlotIndex != -1 && player.playerInventoryHandler.GetObjectData(_fromSlotIndex).objectID != ObjectID.None) player.playerInventoryHandler.Swap(player, _fromSlotIndex, player.playerInventoryHandler, EquipmentSlotIndex);
         }
 
         /// <summary>
