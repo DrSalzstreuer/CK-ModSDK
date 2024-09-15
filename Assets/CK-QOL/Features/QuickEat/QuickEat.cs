@@ -5,8 +5,6 @@ using CK_QOL.Core.Config;
 using CK_QOL.Core.Features;
 using CoreLib.RewiredExtension;
 using Rewired;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace CK_QOL.Features.QuickEat
 {
@@ -60,7 +58,7 @@ namespace CK_QOL.Features.QuickEat
 			ApplyConfigurations();
 			ApplyKeyBinds();
 		}
-		
+
 		public override bool CanExecute()
 		{
 			return base.CanExecute()
@@ -68,14 +66,14 @@ namespace CK_QOL.Features.QuickEat
             && Manager.main.player != null
             && !(Manager.input?.textInputIsActive ?? false);
 		}
-		
+
 		public override void Execute()
         {
             if (!CanExecute())
             {
                 return;
             }
-            
+
             var player = Manager.main.player;
 
             var foundValidEatable = TryFindEatable(player);
@@ -173,9 +171,11 @@ namespace CK_QOL.Features.QuickEat
 		/// <param name="player">The player controller to access inventory and use items.</param>
 		private void ConsumeEatable(PlayerController player)
 		{
-			// Swap the item to the eatable slot and equip it.
-			player.playerInventoryHandler.Swap(player, _fromSlotIndex, player.playerInventoryHandler, EquipmentSlotIndex);
-			player.EquipSlot(EquipmentSlotIndex);
+			// Swap the item to the eatable slot and equip it, unless it's already there.
+            if (_fromSlotIndex != -1 && _fromSlotIndex != EquipmentSlotIndex) {
+                player.playerInventoryHandler.Swap(player, _fromSlotIndex, player.playerInventoryHandler, EquipmentSlotIndex);
+            }
+            player.EquipSlot(EquipmentSlotIndex);
 
 			// Get the input history component and reset the secondInteractUITriggered flag to 'false'.
 			// This is likely needed to ensure that the game recognizes a fresh input action on the next trigger.
@@ -189,13 +189,15 @@ namespace CK_QOL.Features.QuickEat
             // Set the secondInteractUITriggered flag to 'true' to simulate the "right-click" or "use" action on the item.
             var inputHistoryConsume = EntityUtility.GetComponentData<ClientInputHistoryCD>(player.entity, player.world);
             inputHistoryConsume.secondInteractUITriggered = true;
-            EntityUtility.SetComponentData(player.entity, player.world, inputHistoryConsume);
 
 			// Swap the original item back to the eatable slot we used.
-			if (_fromSlotIndex != -1 && player.playerInventoryHandler.GetObjectData(_fromSlotIndex).objectID != ObjectID.None)
+			if (_fromSlotIndex != -1 && _fromSlotIndex != EquipmentSlotIndex && player.playerInventoryHandler.GetObjectData(_fromSlotIndex).objectID != ObjectID.None)
 			{
 				player.playerInventoryHandler.Swap(player, _fromSlotIndex, player.playerInventoryHandler, EquipmentSlotIndex);
 			}
+
+			// Seems to work a bit smoother if this is last? I have no idea why.
+            EntityUtility.SetComponentData(player.entity, player.world, inputHistoryConsume);
 		}
 
         /// <summary>
