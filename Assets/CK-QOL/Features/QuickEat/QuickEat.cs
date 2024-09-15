@@ -3,6 +3,8 @@ using CK_QOL.Core.Config;
 using CK_QOL.Core.Features;
 using CoreLib.RewiredExtension;
 using Rewired;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CK_QOL.Features.QuickEat
 {
@@ -64,6 +66,7 @@ namespace CK_QOL.Features.QuickEat
 		#endregion Configurations
 
 		private int _previousSlotIndex = -1;
+		private int _fromSlotIndex = -1;
 
 		public QuickEat()
 		{
@@ -75,7 +78,7 @@ namespace CK_QOL.Features.QuickEat
             base.CanExecute()
             && Entry.RewiredPlayer != null
             && Manager.main.player != null
-            && !(Manager.input?.textInputIsActive ?? true);
+            && !(Manager.input?.textInputIsActive ?? false);
 		
 		public override void Execute()
         {
@@ -122,6 +125,7 @@ namespace CK_QOL.Features.QuickEat
         private bool TryFindEatable(PlayerController player)
         {
             _previousSlotIndex = player.equippedSlotIndex;
+			_fromSlotIndex = -1;
 
             // Check if there's an eatable item in the predefined slot.
             if (IsEatable(player.playerInventoryHandler.GetObjectData(EquipmentSlotIndex)))
@@ -129,18 +133,30 @@ namespace CK_QOL.Features.QuickEat
                 return true;
             }
 
-            // If there's no eatable item in the slot, look through the inventory.
             var playerInventorySize = player.playerInventoryHandler.size;
+
+			// If there's no eatable item in the slot, look through the inventory and find the first eatable item that's not a potion, prioritizing cooked items first
+			var items = new System.Collections.Generic.Dictionary<int, ObjectDataCD>();
+
             for (var playerInventoryIndex = 0; playerInventoryIndex < playerInventorySize; playerInventoryIndex++)
             {
-                if (!IsEatable(player.playerInventoryHandler.GetObjectData(playerInventoryIndex)))
+				items.Add(playerInventoryIndex, player.playerInventoryHandler.GetObjectData(playerInventoryIndex));
+			}
+
+			var firstEatable = items.
+				Where((i) => IsEatable(i.Value)).
+				OrderByDescending((i) => PugDatabase.HasComponent<CookedFoodCD>(i.Value)).
+				FirstOrDefault();
+
+			if (!firstEatable.Equals(default(KeyValuePair<int, ObjectDataCD>)))
                 {
-                    continue;
+				_fromSlotIndex = firstEatable.Key;
                 }
 
+			if (_fromSlotIndex > -1)
+			{
                 // Swap the item to the eatable slot.
-                player.playerInventoryHandler.Swap(player, playerInventoryIndex, player.playerInventoryHandler, EquipmentSlotIndex);
-
+				player.playerInventoryHandler.Swap(player, _fromSlotIndex, player.playerInventoryHandler, EquipmentSlotIndex);
                 return true;
             }
 
@@ -157,7 +173,8 @@ namespace CK_QOL.Features.QuickEat
         /// </returns>
         private static bool IsEatable(ObjectDataCD objectData)
         {
-	        if (objectData.objectID == ObjectID.None)
+			// Ignore bad items and potions. Some items like milk eatable, but don't improve the 'food' bar.
+			if (objectData.objectID == ObjectID.None || PugDatabase.HasComponent<PotionCD>(objectData))
 	        {
 		        return false;
 	        }
@@ -188,6 +205,14 @@ namespace CK_QOL.Features.QuickEat
             // Set the secondInteractUITriggered flag to 'true' to simulate the "right-click" or "use" action on the item.
             var inputHistoryConsume = EntityUtility.GetComponentData<ClientInputHistoryCD>(player.entity, player.world);
             inputHistoryConsume.secondInteractUITriggered = true;
+
+			//UnityEngine.Debug.Log($" swapping back");
+			// Swap the original item back to the eatable slot we used
+			if (_fromSlotIndex != -1 && player.playerInventoryHandler.GetObjectData(_fromSlotIndex).objectID != ObjectID.None)
+			{
+				player.playerInventoryHandler.Swap(player, _fromSlotIndex, player.playerInventoryHandler, EquipmentSlotIndex);
+			}
+
             EntityUtility.SetComponentData(player.entity, player.world, inputHistoryConsume);
         }
 
