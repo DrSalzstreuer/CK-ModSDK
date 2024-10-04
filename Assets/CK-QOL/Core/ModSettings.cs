@@ -15,12 +15,12 @@ namespace CK_QOL.Core
 		/// <summary>
 		///     The full name of the mod.
 		/// </summary>
-		public const string Name = "CK QOF";
+		internal const string Name = "CK QOL";
 
 		/// <summary>
 		///     The short name of the mod, typically used in logging or as a prefix.
 		/// </summary>
-		public const string ShortName = "CK_QOL";
+		internal const string ShortName = "CK_QOL";
 
 		/// <summary>
 		///     The current version of the mod.
@@ -30,11 +30,13 @@ namespace CK_QOL.Core
 		/// <summary>
 		///     The author of the mod.
 		/// </summary>
-		public const string Author = "DrSalzstreuer";
+		internal const string Author = "DrSalzstreuer";
 
 		/// <summary>
 		///     The contributors who have worked on or helped with the mod.
 		/// </summary>
-		public const string Contributors = "spintermind, Fehdra & Trolxu";
+		internal const string Contributors = "spintermind, Fehdra & Trolxu";
+		
+		internal const string ConfigUI = "CK_QOL:ConfigUI";
 	}
 }

@@ -13,6 +13,7 @@ using CK_QOL.Features.QuickStash;
 using CK_QOL.Features.QuickSummon;
 using CK_QOL.Features.ShiftClick;
 using CK_QOL.Features.Wormhole;
+using CK_QOL.UI;
 using CoreLib;
 using CoreLib.Localization;
 using CoreLib.RewiredExtension;
@@ -28,6 +29,7 @@ namespace CK_QOL
 		private readonly List<IFeature> _features = new();
 
 		internal static LoadedMod ModInfo { get; private set; }
+		internal static AssetBundle AssetBundle => ModInfo.AssetBundles.First();
 		internal static Player RewiredPlayer { get; private set; }
 
 		public void EarlyInit()
@@ -49,10 +51,20 @@ namespace CK_QOL
 
 		public void ModObjectLoaded(Object obj)
 		{
+			if (obj is not GameObject gameObject)
+			{
+				return;
+			}
 		}
 
 		public void Update()
 		{
+			if (RewiredPlayer.GetButtonDown("CK_QOL-ConfigUI"))
+			{
+				var configUI = Object.FindAnyObjectByType<ConfigUI>();
+				configUI?.ToggleUI();
+			}
+
 			foreach (var feature in _features.Where(feature => feature.IsEnabled))
 			{
 				feature.Update();
@@ -77,6 +89,7 @@ namespace CK_QOL
 			CoreLibMod.LoadModule(typeof(RewiredExtensionModule));
 
 			RewiredExtensionModule.rewiredStart += () => RewiredPlayer = ReInput.players.GetPlayer(0);
+			RewiredExtensionModule.AddKeybind("CK_QOL-ConfigUI", "Toggle Config UI", KeyboardKeyCode.Y, ModifierKey.Control);
 		}
 
 		private void InitializeFeatures()

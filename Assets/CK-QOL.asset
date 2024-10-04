@@ -22,6 +22,11 @@ MonoBehaviour:
     requiredOn: 3
     files:
     - path: Localization/Localization.csv
+    - path: Scripts/UI/WindowDragHandler.cs
+    - path: Scripts/UI/Elements/SectionElement.cs
+    - path: Scripts/UI/Elements/ModElement.cs
+    - path: Scripts/UI/Elements/ConfigElement.cs
+    - path: Scripts/UI/ConfigUI.cs
     - path: Scripts/Features/Wormhole/WormholeConfig.cs
     - path: Scripts/Features/Wormhole/Wormhole.cs
     - path: Scripts/Features/Wormhole/Patches/MapMarkerUIElementPatches.cs
@@ -52,6 +57,7 @@ MonoBehaviour:
     - path: Scripts/Features/ChestAutoUnlock/ChestAutoUnlockConfig.cs
     - path: Scripts/Features/ChestAutoUnlock/ChestAutoUnlock.cs
     - path: Scripts/Entry.cs
+    - path: Scripts/Core/Patches/TitleScreenAnimatorPatches.cs
     - path: Scripts/Core/Patches/ItemDiscoveryUIPatches.cs
     - path: Scripts/Core/Patches/ItemDiscoveryTextUIPatches.cs
     - path: Scripts/Core/ModSettings.cs
@@ -61,6 +67,7 @@ MonoBehaviour:
     - path: Scripts/Core/Helpers/InventoryHandlerHelper.cs
     - path: Scripts/Core/Helpers/CoroutineHelper.cs
     - path: Scripts/Core/Helpers/ChestHelper.cs
+    - path: Scripts/Core/Helpers/AssetHelper.cs
     - path: Scripts/Core/Features/QuickActionFeatureBase.cs
     - path: Scripts/Core/Features/IKeyBindableFeature.cs
     - path: Scripts/Core/Features/IFeature.cs
