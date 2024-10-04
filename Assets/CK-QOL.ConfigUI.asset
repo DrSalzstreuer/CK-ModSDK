@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc43e4983a160e543856e5ba0421c9e1, type: 3}
+  m_Name: CK-QOL.ConfigUI
+  m_EditorClassIdentifier: 
+  metadata:
+    guid: 061b74c9f401486789eaa86cb6b90aa9
+    name: CK-QOL.ConfigUI
+    skipSafetyChecks: 0
+    disableScripts: 0
+    accessesExtraAssemblies: 1
+    disableHarmonyPatching: 0
+    requiredOn: 1
+    files: []
+    dependencies:
+    - modName: CoreLib
+      required: 1
+    - modName: CoreLib.RewiredExtension
+      required: 1
+  modPath: Assets\CK-QOL.ConfigUI
+  buildBurst: 1
+  buildLinux: 1

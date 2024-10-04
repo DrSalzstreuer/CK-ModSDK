@@ -13,7 +13,6 @@ using CK_QOL.Features.QuickStash;
 using CK_QOL.Features.QuickSummon;
 using CK_QOL.Features.ShiftClick;
 using CK_QOL.Features.Wormhole;
-using CK_QOL.UI;
 using CoreLib;
 using CoreLib.Localization;
 using CoreLib.RewiredExtension;
@@ -59,12 +58,6 @@ namespace CK_QOL
 
 		public void Update()
 		{
-			if (RewiredPlayer.GetButtonDown("CK_QOL-ConfigUI"))
-			{
-				var configUI = Object.FindAnyObjectByType<ConfigUI>();
-				configUI?.ToggleUI();
-			}
-
 			foreach (var feature in _features.Where(feature => feature.IsEnabled))
 			{
 				feature.Update();

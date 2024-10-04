@@ -86,6 +86,8 @@ MonoBehaviour:
       required: 1
     - modName: CoreLib.RewiredExtension
       required: 1
+    - modName: CK-QOL.ConfigUI
+      required: 1
   modPath: Assets\CK-QOL
   buildBurst: 1
   buildLinux: 1
