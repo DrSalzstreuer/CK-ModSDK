@@ -3,14 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using CK_QOL.ConfigUI.Core;
 using CK_QOL.ConfigUI.UI.Elements;
 using CoreLib.Data.Configuration;
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace CK_QOL.ConfigUI.UI
 {
+	[HarmonyPatch]
 	public class ConfigUI : MonoBehaviour
 	{
 		[Header("UI Elements")] 
@@ -30,21 +31,42 @@ namespace CK_QOL.ConfigUI.UI
 		public GameObject togglePrefab;
 
 		private readonly Dictionary<string, List<ConfigFile>> _configFiles = new Dictionary<string, List<ConfigFile>>();
+		private static bool IsMenuOpen;
+
+		[HarmonyPrefix]
+		[HarmonyPatch(typeof(Cursor), "set_visible")]
+		public static bool Cursor_set_visible(bool value)
+		{
+			return value || IsMenuOpen != true;
+		}
 
 		public void ToggleUI()
 		{
-			uiContainerElement.SetActive(!uiContainerElement.activeSelf);
-			StartCoroutine(RebuildLayout());
+			if (uiContainerElement.activeSelf)
+			{
+				HideUI();
+			}
+			else
+			{
+				ShowUI();
+			}
 		}
 
 		public void ShowUI()
 		{
+			IsMenuOpen = true;
+			
 			uiContainerElement.SetActive(true);
+			Cursor.lockState = CursorLockMode.None;
+			Cursor.visible = true;
+
 			StartCoroutine(RebuildLayout());
 		}
 
 		public void HideUI()
 		{
+			IsMenuOpen = false;
+			
 			uiContainerElement.SetActive(false);
 			StartCoroutine(RebuildLayout());
 		}
@@ -59,6 +81,14 @@ namespace CK_QOL.ConfigUI.UI
 			LoadConfigs();
 			RenderUI();
 			HideUI();
+		}
+
+		private void Update()
+		{
+			if (Input.GetMouseButton(0))
+			{
+				Manager.input.DisableInput(1);
+			}
 		}
 
 		private void LoadConfigs()
@@ -264,22 +294,28 @@ namespace CK_QOL.ConfigUI.UI
 				mainCanvas = canvasObject.AddComponent<Canvas>();
 				mainCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
 				mainCanvas.sortingOrder = 1337;
-				canvasObject.AddComponent<CanvasScaler>();
+				var mainCanvasScaler = canvasObject.AddComponent<CanvasScaler>();
+				mainCanvasScaler.referenceResolution = new Vector2(1280, 720);
+				mainCanvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
 				canvasObject.AddComponent<GraphicRaycaster>();
 			}
 
 			transform.SetParent(mainCanvas.transform, false);
+			FindObjectOfType<WindowDragHandler>().Initialize(mainCanvas);
 		}
 
 		private IEnumerator RebuildLayout()
 		{
 			yield return new WaitForEndOfFrame();
+
 			Canvas.ForceUpdateCanvases();
 
 			yield return new WaitForEndOfFrame();
+
 			LayoutRebuilder.ForceRebuildLayoutImmediate(modContainerElement.GetComponent<RectTransform>());
 
 			yield return new WaitForEndOfFrame();
+
 			uiContainerElement.GetComponent<ScrollRect>().verticalNormalizedPosition = 1f;
 		}
 
