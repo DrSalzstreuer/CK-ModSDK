@@ -19,8 +19,21 @@ MonoBehaviour:
     disableScripts: 0
     accessesExtraAssemblies: 1
     disableHarmonyPatching: 0
-    requiredOn: 1
-    files: []
+    requiredOn: 0
+    files:
+    - path: Scripts/UI/WindowDragHandler.cs
+    - path: Scripts/UI/Elements/SectionElement.cs
+    - path: Scripts/UI/Elements/ModElement.cs
+    - path: Scripts/UI/Elements/ConfigElement.cs
+    - path: Scripts/UI/ConfigUI.cs
+    - path: Scripts/Entry.cs
+    - path: Scripts/Core/Patches/TitleScreenAnimatorPatches.cs
+    - path: Scripts/Core/ModSettings.cs
+    - path: Scripts/Core/ModLogger.cs
+    - path: Scripts/Core/Helpers/TransformHelpers.cs
+    - path: Scripts/Core/Helpers/AssetHelper.cs
+    - path: Bundles/CK-QOL.ConfigUI_Windows.assetbundle
+    - path: Bundles/CK-QOL.ConfigUI_Linux.assetbundle
     dependencies:
     - modName: CoreLib
       required: 1

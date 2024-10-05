@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using CK_QOL.ConfigUI.Core;
 using CK_QOL.ConfigUI.UI.Elements;
 using CoreLib.Data.Configuration;
 using UnityEngine;
@@ -33,19 +34,19 @@ namespace CK_QOL.ConfigUI.UI
 		public void ToggleUI()
 		{
 			uiContainerElement.SetActive(!uiContainerElement.activeSelf);
-			StartCoroutine(RebuildLayoutNextFrames());
+			StartCoroutine(RebuildLayout());
 		}
 
 		public void ShowUI()
 		{
 			uiContainerElement.SetActive(true);
-			StartCoroutine(RebuildLayoutNextFrames());
+			StartCoroutine(RebuildLayout());
 		}
 
 		public void HideUI()
 		{
 			uiContainerElement.SetActive(false);
-			StartCoroutine(RebuildLayoutNextFrames());
+			StartCoroutine(RebuildLayout());
 		}
 
 		private void Awake()
@@ -65,7 +66,7 @@ namespace CK_QOL.ConfigUI.UI
 			foreach (var configFile in ConfigFile.AllConfigFilesReadOnly)
 			{
 				var modName = ConfigFile.GetDirectoryName(configFile.ConfigFilePath);
-
+			
 				if (_configFiles.TryGetValue(modName, out var configFiles))
 				{
 					configFiles.Add(configFile);
@@ -81,114 +82,181 @@ namespace CK_QOL.ConfigUI.UI
 		{
 			foreach (var mod in _configFiles)
 			{
-				var modElement = Instantiate(modPrefab, modContainerElement.transform).GetComponent<ModElement>();
-				modElement.nameElement.GetComponent<Text>().text = mod.Key;
-
-				foreach (var configFile in mod.Value)
-				{
-					var groupedConfigFileEntries = configFile.Entries.GroupBy(entry => entry.Key.Section);
-					foreach (var groupedConfigFileEntry in groupedConfigFileEntries)
-					{
-						var sectionElement = Instantiate(sectionPrefab, modElement.sectionContainerElement.transform).GetComponent<SectionElement>();
-						sectionElement.nameElement.GetComponent<Text>().text = groupedConfigFileEntry.Key;
-
-						foreach (var (key, configEntry) in groupedConfigFileEntry)
-						{
-							var configElement = Instantiate(configPrefab, sectionElement.configContainerElement.transform).GetComponent<ConfigElement>();
-							configElement.nameElement.GetComponent<Text>().text = $"{key.Key} {(configEntry.DefaultValue != null ? " (" + configEntry.DefaultValue + ")" : "")}";
-							configElement.descriptionElement.GetComponent<Text>().text = configEntry.Description.Description;
-
-							if (configEntry.Description == ConfigDescription.Empty || configEntry.Description.AcceptableValues == null)
-							{
-								var inputElement = Instantiate(inputFieldPrefab, configElement.inputContainerElement.transform).GetComponent<InputField>();
-								inputElement.text = configEntry.BoxedValue.ToString();
-
-								inputElement.onValueChanged.AddListener(value => configEntry.SetSerializedValue(value.ToString(CultureInfo.InvariantCulture)));
-							}
-							else if (configEntry.Description.AcceptableValues != null)
-							{
-								switch (configEntry.Description.AcceptableValues)
-								{
-									case AcceptableValueRange<int> intRange:
-									{
-										var inputElementContainer = Instantiate(sliderPrefab, configElement.inputContainerElement.transform);
-										var currentValueElement = inputElementContainer.transform.Find("CurrentValue").GetComponent<Text>();
-										var inputElement = inputElementContainer.transform.Find("Slider").GetComponent<Slider>();
-										inputElement.value = float.Parse(configEntry.BoxedValue.ToString());
-										currentValueElement.text = configEntry.BoxedValue.ToString();
-										inputElement.minValue = intRange.MinValue;
-										inputElement.maxValue = intRange.MaxValue;
-										inputElement.wholeNumbers = true;
-
-										inputElement.onValueChanged.AddListener(value =>
-										{
-											currentValueElement.text = value.ToString(CultureInfo.InvariantCulture);
-											configEntry.SetSerializedValue(value.ToString(CultureInfo.InvariantCulture));
-										});
-
-										break;
-									}
-									case AcceptableValueRange<float> floatRange:
-									{
-										var inputElementContainer = Instantiate(sliderPrefab, configElement.inputContainerElement.transform);
-										var currentValueElement = inputElementContainer.transform.Find("CurrentValue").GetComponent<Text>();
-										var inputElement = inputElementContainer.transform.Find("Slider").GetComponent<Slider>();
-										inputElement.value = float.Parse(configEntry.BoxedValue.ToString());
-										inputElementContainer.transform.Find("CurrentValue").GetComponent<Text>().text = configEntry.BoxedValue.ToString();
-										inputElement.minValue = floatRange.MinValue;
-										inputElement.maxValue = floatRange.MaxValue;
-										inputElement.wholeNumbers = false;
-
-										inputElement.onValueChanged.AddListener(value =>
-										{
-											currentValueElement.text = value.ToString(CultureInfo.InvariantCulture);
-											configEntry.SetSerializedValue(value.ToString(CultureInfo.InvariantCulture));
-										});
-
-										break;
-									}
-									case AcceptableValueList<bool> boolList:
-									{
-										var inputElement = Instantiate(togglePrefab, configElement.inputContainerElement.transform).GetComponent<Toggle>();
-										inputElement.isOn = bool.Parse(configEntry.BoxedValue.ToString());
-
-										inputElement.onValueChanged.AddListener(value => configEntry.SetSerializedValue(value.ToString(CultureInfo.InvariantCulture)));
-
-										break;
-									}
-									default:
-									{
-										var inputElement = Instantiate(dropDownPrefab, configElement.inputContainerElement.transform).GetComponent<Dropdown>();
-
-										if (configEntry.SettingType.IsEnum)
-										{
-											var values = Enum.GetNames(configEntry.SettingType);
-
-											inputElement.options.AddRange(values.Select(value => new Dropdown.OptionData(value)));
-											inputElement.value = Array.IndexOf(values, configEntry.BoxedValue);
-
-											inputElement.onValueChanged.AddListener(value => configEntry.SetSerializedValue(values[value].ToString(CultureInfo.InvariantCulture)));
-										}
-										else
-										{
-											var valuesString = configEntry.Description.AcceptableValues.ToDescriptionString();
-											var values = valuesString.Trim().Replace("# Acceptable values: ", "").Split(',');
-
-											inputElement.options.AddRange(values.Select(value => new Dropdown.OptionData(value)));
-											inputElement.value = Array.IndexOf(values, configEntry.BoxedValue);
-
-											inputElement.onValueChanged.AddListener(value => configEntry.SetSerializedValue(values[value].ToString(CultureInfo.InvariantCulture)));
-										}
-
-										break;
-									}
-								}
-							}
-						}
-					}
-				}
+				RenderMod(mod.Key, mod.Value);
 			}
 
+			SetupMainCanvas();
+			StartCoroutine(RebuildLayout());
+		}
+
+		private void RenderMod(string modName, List<ConfigFile> configFiles)
+		{
+			var modElement = Instantiate(modPrefab, modContainerElement.transform).GetComponent<ModElement>();
+			modElement.nameElement.GetComponent<Text>().text = modName;
+
+			foreach (var configFile in configFiles)
+			{
+				var groupedEntries = configFile.Entries.GroupBy(entry => entry.Key.Section);
+				foreach (var sectionGroup in groupedEntries)
+				{
+					RenderSection(modElement, sectionGroup.Key, sectionGroup);
+				}
+			}
+		}
+
+		private void RenderSection(ModElement modElement, string sectionName, IEnumerable<KeyValuePair<ConfigDefinition, ConfigEntryBase>> entries)
+		{
+			var sectionElement = Instantiate(sectionPrefab, modElement.sectionContainerElement.transform).GetComponent<SectionElement>();
+			sectionElement.nameElement.GetComponent<Text>().text = sectionName;
+
+			foreach (var entry in entries)
+			{
+				RenderConfig(sectionElement, entry.Key, entry.Value);
+			}
+		}
+
+		private void RenderConfig(SectionElement sectionElement, ConfigDefinition key, ConfigEntryBase configEntry)
+		{
+			var configElement = Instantiate(configPrefab, sectionElement.configContainerElement.transform).GetComponent<ConfigElement>();
+			var defaultValueText = configEntry.DefaultValue != null ? $" ({configEntry.DefaultValue})" : string.Empty;
+			configElement.nameElement.GetComponent<Text>().text = $"{key.Key}{defaultValueText}";
+			configElement.descriptionElement.GetComponent<Text>().text = configEntry.Description.Description;
+
+			CreateInputElement(configElement, configEntry);
+		}
+
+		private void CreateInputElement(ConfigElement configElement, ConfigEntryBase configEntry)
+		{
+			if (configEntry.Description == ConfigDescription.Empty || configEntry.Description.AcceptableValues == null)
+			{
+				CreateInputField(configElement, configEntry);
+			}
+			else
+			{
+				CreateSpecificInputElement(configElement, configEntry);
+			}
+		}
+
+		private void CreateInputField(ConfigElement configElement, ConfigEntryBase configEntry)
+		{
+			var inputElement = Instantiate(inputFieldPrefab, configElement.inputContainerElement.transform).GetComponent<InputField>();
+			inputElement.text = configEntry.BoxedValue.ToString();
+
+			inputElement.onValueChanged.AddListener(value => { configEntry.SetSerializedValue(value.ToString(CultureInfo.InvariantCulture)); });
+		}
+
+		private void CreateSpecificInputElement(ConfigElement configElement, ConfigEntryBase configEntry)
+		{
+			var acceptableValues = configEntry.Description.AcceptableValues;
+
+			switch (acceptableValues)
+			{
+				case AcceptableValueRange<int> intRange:
+					CreateIntSlider(configElement, configEntry, intRange);
+
+					break;
+
+				case AcceptableValueRange<float> floatRange:
+					CreateFloatSlider(configElement, configEntry, floatRange);
+
+					break;
+
+				case AcceptableValueList<bool> boolList:
+					CreateToggle(configElement, configEntry);
+
+					break;
+
+				default:
+					CreateDropdown(configElement, configEntry);
+
+					break;
+			}
+		}
+
+		private void CreateIntSlider(ConfigElement configElement, ConfigEntryBase configEntry, AcceptableValueRange<int> intRange)
+		{
+			var inputElementContainer = Instantiate(sliderPrefab, configElement.inputContainerElement.transform);
+			var currentValueElement = inputElementContainer.transform.Find("CurrentValue").GetComponent<Text>();
+			var inputElement = inputElementContainer.transform.Find("Slider").GetComponent<Slider>();
+
+			inputElement.minValue = intRange.MinValue;
+			inputElement.maxValue = intRange.MaxValue;
+			inputElement.wholeNumbers = true;
+			inputElement.value = Convert.ToSingle(configEntry.BoxedValue);
+			currentValueElement.text = configEntry.BoxedValue.ToString();
+
+			inputElement.onValueChanged.AddListener(value =>
+			{
+				currentValueElement.text = value.ToString(CultureInfo.InvariantCulture);
+				configEntry.SetSerializedValue(value.ToString(CultureInfo.InvariantCulture));
+			});
+		}
+
+		private void CreateFloatSlider(ConfigElement configElement, ConfigEntryBase configEntry, AcceptableValueRange<float> floatRange)
+		{
+			var inputElementContainer = Instantiate(sliderPrefab, configElement.inputContainerElement.transform);
+			var currentValueElement = inputElementContainer.transform.Find("CurrentValue").GetComponent<Text>();
+			var inputElement = inputElementContainer.transform.Find("Slider").GetComponent<Slider>();
+
+			inputElement.minValue = floatRange.MinValue;
+			inputElement.maxValue = floatRange.MaxValue;
+			inputElement.wholeNumbers = false;
+			inputElement.value = Convert.ToSingle(configEntry.BoxedValue);
+			currentValueElement.text = configEntry.BoxedValue.ToString();
+
+			inputElement.onValueChanged.AddListener(value =>
+			{
+				currentValueElement.text = value.ToString(CultureInfo.InvariantCulture);
+				configEntry.SetSerializedValue(value.ToString(CultureInfo.InvariantCulture));
+			});
+		}
+
+		private void CreateToggle(ConfigElement configElement, ConfigEntryBase configEntry)
+		{
+			var inputElement = Instantiate(togglePrefab, configElement.inputContainerElement.transform).GetComponent<Toggle>();
+			inputElement.isOn = Convert.ToBoolean(configEntry.BoxedValue);
+
+			inputElement.onValueChanged.AddListener(value => { configEntry.SetSerializedValue(value.ToString(CultureInfo.InvariantCulture)); });
+		}
+
+		private void CreateDropdown(ConfigElement configElement, ConfigEntryBase configEntry)
+		{
+			var inputElement = Instantiate(dropDownPrefab, configElement.inputContainerElement.transform).GetComponent<Dropdown>();
+
+			if (configEntry.SettingType.IsEnum)
+			{
+				var values = Enum.GetNames(configEntry.SettingType);
+				inputElement.options.AddRange(values.Select(value => new Dropdown.OptionData(value)));
+
+				var currentValue = configEntry.BoxedValue.ToString();
+				inputElement.value = Array.IndexOf(values, currentValue);
+
+				inputElement.onValueChanged.AddListener(index =>
+				{
+					var selectedValue = values[index];
+					configEntry.SetSerializedValue(selectedValue.ToString(CultureInfo.InvariantCulture));
+				});
+			}
+			else
+			{
+				var valuesString = configEntry.Description.AcceptableValues.ToDescriptionString();
+				var values = valuesString.Trim().Replace("# Acceptable values: ", "").Split(',');
+
+				inputElement.options.AddRange(values.Select(value => new Dropdown.OptionData(value.Trim())));
+
+				var currentValue = configEntry.BoxedValue.ToString();
+				inputElement.value = Array.IndexOf(values, currentValue);
+
+				inputElement.onValueChanged.AddListener(index =>
+				{
+					var selectedValue = values[index];
+					configEntry.SetSerializedValue(selectedValue.ToString(CultureInfo.InvariantCulture));
+				});
+			}
+		}
+
+		private void SetupMainCanvas()
+		{
 			var mainCanvas = FindObjectOfType<Canvas>();
 			if (mainCanvas == null)
 			{
@@ -200,22 +268,18 @@ namespace CK_QOL.ConfigUI.UI
 				canvasObject.AddComponent<GraphicRaycaster>();
 			}
 
-			transform.SetParent(mainCanvas.transform, false);			
-			StartCoroutine(RebuildLayoutNextFrames());
+			transform.SetParent(mainCanvas.transform, false);
 		}
 
-		private IEnumerator RebuildLayoutNextFrames()
+		private IEnumerator RebuildLayout()
 		{
 			yield return new WaitForEndOfFrame();
-			
 			Canvas.ForceUpdateCanvases();
-			
-			yield return new WaitForEndOfFrame();
 
+			yield return new WaitForEndOfFrame();
 			LayoutRebuilder.ForceRebuildLayoutImmediate(modContainerElement.GetComponent<RectTransform>());
 
 			yield return new WaitForEndOfFrame();
-
 			uiContainerElement.GetComponent<ScrollRect>().verticalNormalizedPosition = 1f;
 		}
 

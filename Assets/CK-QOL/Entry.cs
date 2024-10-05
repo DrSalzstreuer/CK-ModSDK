@@ -82,7 +82,6 @@ namespace CK_QOL
 			CoreLibMod.LoadModule(typeof(RewiredExtensionModule));
 
 			RewiredExtensionModule.rewiredStart += () => RewiredPlayer = ReInput.players.GetPlayer(0);
-			RewiredExtensionModule.AddKeybind("CK_QOL-ConfigUI", "Toggle Config UI", KeyboardKeyCode.Y, ModifierKey.Control);
 		}
 
 		private void InitializeFeatures()
