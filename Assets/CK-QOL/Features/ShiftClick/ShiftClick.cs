@@ -12,7 +12,7 @@ namespace CK_QOL.Features.ShiftClick
 	///     This feature is triggered by holding the Shift key (or controller equivalent) and interacting with an item in
 	///     the player's or chest inventory.
 	/// </summary>
-	internal sealed class ShiftClick : FeatureBase<ShiftClick>, IKeyBindableFeature
+	internal sealed class ShiftClick : FeatureBase<ShiftClick, ShiftClickConfig>, IKeyBindableFeature
 	{
 		private static readonly ObjectType[] IgnoredItemTypes =
 		{
@@ -29,15 +29,9 @@ namespace CK_QOL.Features.ShiftClick
 
 		public ShiftClick()
 		{
-			var config = new ShiftClickConfig(this);
-			IsEnabled = config.ApplyIsEnabled();
-
 			SetupKeyBindings();
 		}
 
-		/// <summary>
-		///     Determines if the Shift + Click feature can be executed based on game state and UI status.
-		/// </summary>
 		public override bool CanExecute()
 		{
 			return base.CanExecute() && Entry.RewiredPlayer != null && Manager.main.currentSceneHandler?.isInGame == true && Manager.main.player?.playerInventoryHandler != null && Manager.ui.isPlayerInventoryShowing &&

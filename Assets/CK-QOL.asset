@@ -63,7 +63,6 @@ MonoBehaviour:
     - path: Scripts/Core/Helpers/CoroutineHelper.cs
     - path: Scripts/Core/Helpers/ChestHelper.cs
     - path: Scripts/Core/Helpers/AssetHelper.cs
-    - path: Scripts/Core/Features/QuickActionFeatureBase.cs
     - path: Scripts/Core/Features/IKeyBindableFeature.cs
     - path: Scripts/Core/Features/IFeature.cs
     - path: Scripts/Core/Features/FeatureType.cs

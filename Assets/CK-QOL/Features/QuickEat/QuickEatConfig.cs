@@ -9,34 +9,23 @@ namespace CK_QOL.Features.QuickEat
 	/// </summary>
 	internal sealed class QuickEatConfig : ConfigBase<QuickEat>
 	{
-		/// <summary>
-		///     Initializes a new instance of the <see cref="QuickEatConfig" /> class for the given feature.
-		/// </summary>
-		/// <param name="feature">
-		///     The <see cref="QuickEat" /> feature being configured.
-		/// </param>
-		public QuickEatConfig(QuickEat feature) : base(feature)
+		protected override bool DefaultIsEnabled => true;
+		internal ConfigEntry<int> EquipmentSlotIndex { get; private set; }
+
+		internal override void Initialize(QuickEat feature)
 		{
+			base.Initialize(feature);
+
+			EquipmentSlotIndex = ApplyEquipmentSlotIndex();
 		}
 
-		/// <summary>
-		///     Overrides the default enabled value for <see cref="QuickEat" />.
-		/// </summary>
-		protected override bool DefaultIsEnabled => true;
-
-		/// <summary>
-		///     Applies the equipment slot index setting for QuickEat.
-		/// </summary>
-		/// <returns>The index of the equipment slot.</returns>
-		public int ApplyEquipmentSlotIndex()
+		private ConfigEntry<int> ApplyEquipmentSlotIndex()
 		{
 			var acceptableValues = new AcceptableValueRange<int>(0, 9);
 			var description = new ConfigDescription("The equipment slot index for eatable items.", acceptableValues);
 			var definition = new ConfigDefinition(Feature.Name, nameof(Feature.EquipmentSlotIndex));
 
-			var entry = Config.Bind(definition, 8, description);
-
-			return entry.Value;
+			return Config.Bind(definition, 8, description);
 		}
 	}
 }

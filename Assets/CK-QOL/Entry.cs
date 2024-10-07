@@ -50,10 +50,6 @@ namespace CK_QOL
 
 		public void ModObjectLoaded(Object obj)
 		{
-			if (obj is not GameObject gameObject)
-			{
-				return;
-			}
 		}
 
 		public void Update()

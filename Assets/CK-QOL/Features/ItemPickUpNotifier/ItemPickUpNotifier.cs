@@ -7,27 +7,8 @@ namespace CK_QOL.Features.ItemPickUpNotifier
 	///     ground.
 	///     The feature aggregates multiple pick-up events within a configurable delay period to reduce notification spam.
 	/// </summary>
-	internal sealed class ItemPickUpNotifier : FeatureBase<ItemPickUpNotifier>
+	internal sealed class ItemPickUpNotifier : FeatureBase<ItemPickUpNotifier, ItemPickUpNotifierConfig>
 	{
-		/// <summary>
-		///     Initializes a new instance of the <see cref="ItemPickUpNotifier" /> class and applies the configuration settings.
-		/// </summary>
-		public ItemPickUpNotifier()
-		{
-			var config = new ItemPickUpNotifierConfig(this);
-			IsEnabled = config.ApplyIsEnabled();
-			AggregateDelay = config.ApplyAggregateDelay();
-		}
-
-		#region Configurations
-
-		/// <summary>
-		///     Gets the delay, in seconds, used to aggregate picked-up items before displaying the notification.
-		/// </summary>
-		internal float AggregateDelay { get; }
-
-		#endregion Configurations
-
 		#region IFeature
 
 		public override string Name => nameof(ItemPickUpNotifier);
@@ -36,5 +17,14 @@ namespace CK_QOL.Features.ItemPickUpNotifier
 		public override FeatureType FeatureType => FeatureType.Client;
 
 		#endregion IFeature
+
+		#region Configurations
+
+		/// <summary>
+		///     Gets the delay, in seconds, used to aggregate picked-up items before displaying the notification.
+		/// </summary>
+		internal float AggregateDelay => Config.AggregateDelay.Value;
+
+		#endregion Configurations
 	}
 }

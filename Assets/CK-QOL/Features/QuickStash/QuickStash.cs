@@ -12,15 +12,10 @@ namespace CK_QOL.Features.QuickStash
 	///     chests. This feature works by automatically finding nearby chests and moving stackable items from the player's
 	///     inventory to matching items in the chests.
 	/// </summary>
-	internal sealed class QuickStash : FeatureBase<QuickStash>, IKeyBindableFeature
+	internal sealed class QuickStash : FeatureBase<QuickStash, QuickStashConfig>, IKeyBindableFeature
 	{
 		public QuickStash()
 		{
-			var config = new QuickStashConfig(this);
-			IsEnabled = config.ApplyIsEnabled();
-			MaxRange = config.ApplyMaxRange();
-			MaxChests = config.ApplyMaxChests();
-
 			SetupKeyBindings();
 		}
 
@@ -116,8 +111,8 @@ namespace CK_QOL.Features.QuickStash
 
 		#region Configuration
 
-		internal float MaxRange { get; }
-		internal int MaxChests { get; }
+		internal float MaxRange => Config.MaxRange.Value;
+		internal int MaxChests => Config.MaxChests.Value;
 
 		public string KeyBindName => $"{ModSettings.ShortName}_{Name}";
 

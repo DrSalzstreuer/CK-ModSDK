@@ -25,24 +25,16 @@ namespace CK_QOL.Features.QuickHeal
 	/// <remarks>
 	///     The "Quick Heal" feature allows players to heal rapidly during combat without manually searching through their
 	///     inventory.
-	///     This class inherits from <see cref="QuickActionFeatureBase{TFeature}" /> to provide common functionality for item
+	///     This class inherits from <see cref="FeatureBase{TFeature, TFeatureConfig}" /> to provide common functionality for item
 	///     management.
 	/// </remarks>
-	internal sealed class QuickHeal : FeatureBase<QuickHeal>, IKeyBindableFeature
+	internal sealed class QuickHeal : FeatureBase<QuickHeal, QuickHealConfig>, IKeyBindableFeature
 	{
 		private int _fromSlotIndex = -1;
 		private int _previousSlotIndex = -1;
 
-		/// <summary>
-		///     Initializes a new instance of the <see cref="QuickHeal" /> class, applying configuration settings and binding
-		///     the key for the healing action.
-		/// </summary>
 		public QuickHeal()
 		{
-			var config = new QuickHealConfig(this);
-			IsEnabled = config.ApplyIsEnabled();
-			EquipmentSlotIndex = config.ApplyEquipmentSlotIndex();
-
 			SetupKeyBindings();
 		}
 
@@ -188,25 +180,16 @@ namespace CK_QOL.Features.QuickHeal
 
 		#region IFeature
 
-		/// <inheritdoc />
 		public override string Name => nameof(QuickHeal);
-
-		/// <inheritdoc />
 		public override string DisplayName => "Quick Heal";
-
-		/// <inheritdoc />
 		public override string Description => "Quickly equips or switches the preferred healable item, consumes it, and swaps back to the previous item.";
-
-		/// <inheritdoc />
 		public override FeatureType FeatureType => FeatureType.Client;
 
 		#endregion IFeature
 
 		#region Configurations
 
-		internal int EquipmentSlotIndex { get; }
-
-		/// <inheritdoc />
+		internal int EquipmentSlotIndex => Config.EquipmentSlotIndex.Value;
 		public string KeyBindName => $"{ModSettings.ShortName}_{Name}";
 
 		public void SetupKeyBindings()

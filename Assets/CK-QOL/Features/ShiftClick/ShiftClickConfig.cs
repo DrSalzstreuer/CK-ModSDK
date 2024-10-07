@@ -8,19 +8,6 @@ namespace CK_QOL.Features.ShiftClick
 	/// </summary>
 	internal sealed class ShiftClickConfig : ConfigBase<ShiftClick>
 	{
-		/// <summary>
-		///     Initializes a new instance of the <see cref="ShiftClickConfig" /> class for the given feature.
-		/// </summary>
-		/// <param name="feature">
-		///     The <see cref="ShiftClick" /> feature being configured.
-		/// </param>
-		public ShiftClickConfig(ShiftClick feature) : base(feature)
-		{
-		}
-
-		/// <summary>
-		///     Overrides the default enabled value for <see cref="ShiftClick" />.
-		/// </summary>
 		protected override bool DefaultIsEnabled => true;
 	}
 }

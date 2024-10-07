@@ -8,13 +8,6 @@ namespace CK_QOL.Features.NoDeathPenalty
 	/// </summary>
 	internal sealed class NoDeathPenaltyConfig : ConfigBase<NoDeathPenalty>
 	{
-		public NoDeathPenaltyConfig(NoDeathPenalty feature) : base(feature)
-		{
-		}
-
-		/// <summary>
-		///     Overrides the default enabled value for <see cref="NoDeathPenalty" />.
-		/// </summary>
 		protected override bool DefaultIsEnabled => false;
 	}
 }

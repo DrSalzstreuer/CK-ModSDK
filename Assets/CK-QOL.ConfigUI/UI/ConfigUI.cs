@@ -307,6 +307,8 @@ namespace CK_QOL.ConfigUI.UI
 				mainCanvasScaler.referenceResolution = new Vector2(1280, 720);
 				mainCanvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
 				canvasObject.AddComponent<GraphicRaycaster>();
+				
+				DontDestroyOnLoad(mainCanvas);
 			}
 
 			transform.SetParent(mainCanvas.transform, false);

@@ -30,25 +30,17 @@ namespace CK_QOL.Features.QuickSummon
 	/// </summary>
 	/// <remarks>
 	///     The "Quick Summon" feature allows players to rapidly switch to a summoning tome, cast a spell, and revert back to
-	///     their previously equipped item. This class inherits from <see cref="QuickActionFeatureBase{TFeature}" /> to provide
+	///     their previously equipped item. This class inherits from <see cref="FeatureBase{TFeature, TConfig}" /> to provide
 	///     common functionality for equipping and using items.
 	/// </remarks>
-	internal sealed class QuickSummon : FeatureBase<QuickSummon>
+	internal sealed class QuickSummon : FeatureBase<QuickSummon, QuickSummonConfig>
 	{
 		private int _fromSlotIndex = -1;
 		private int _previousSlotIndex = -1;
 		private ObjectID _tomeID = ObjectID.None;
 
-		/// <summary>
-		///     Initializes a new instance of the <see cref="QuickSummon" /> class, applying configuration settings and binding
-		///     the key for the summon action.
-		/// </summary>
 		public QuickSummon()
 		{
-			var config = new QuickSummonConfig(this);
-			IsEnabled = config.ApplyIsEnabled();
-			EquipmentSlotIndex = config.ApplyEquipmentSlotIndex();
-
 			SetupKeyBindings();
 		}
 
@@ -201,7 +193,7 @@ namespace CK_QOL.Features.QuickSummon
 		internal string KeyBindNameX => $"{ModSettings.ShortName}_{Name}-TomeOfTheDark";
 		internal string KeyBindNameK => $"{ModSettings.ShortName}_{Name}-TomeOfTheDeep";
 		internal string KeyBindNameL => $"{ModSettings.ShortName}_{Name}-TomeOfTheDead";
-		internal int EquipmentSlotIndex { get; }
+		internal int EquipmentSlotIndex => Config.EquipmentSlotIndex.Value;
 
 		public void SetupKeyBindings()
 		{

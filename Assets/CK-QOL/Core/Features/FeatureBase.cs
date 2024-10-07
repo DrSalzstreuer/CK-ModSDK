@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using CK_QOL.Core.Config;
+using CoreLib.Data.Configuration;
 
 namespace CK_QOL.Core.Features
 {
@@ -7,7 +9,9 @@ namespace CK_QOL.Core.Features
 	///     A base class for all features, implementing the IFeature interface and providing thread-safe singleton behavior.
 	/// </summary>
 	/// <typeparam name="TFeature">The type of the feature inheriting from FeatureBase.</typeparam>
-	internal abstract class FeatureBase<TFeature> : IFeature where TFeature : FeatureBase<TFeature>, new()
+	/// <typeparam name="TConfig">The type of the feature's config inheriting from ConfigBase.</typeparam>
+	internal abstract class FeatureBase<TFeature, TConfig> : IFeature where TFeature : FeatureBase<TFeature, TConfig>, new()
+		where TConfig : ConfigBase<TFeature>, new()
 	{
 		/// <summary>
 		///     Determines whether the feature can be executed.
@@ -54,6 +58,8 @@ namespace CK_QOL.Core.Features
 		[SuppressMessage("ReSharper", "EmptyConstructor")]
 		protected FeatureBase()
 		{
+			Config = new TConfig();
+			Config.Initialize(this as TFeature);
 		}
 
 		#endregion Singleton
@@ -64,8 +70,14 @@ namespace CK_QOL.Core.Features
 		public abstract string DisplayName { get; }
 		public abstract string Description { get; }
 		public abstract FeatureType FeatureType { get; }
-		public bool IsEnabled { get; protected set; }
+		public bool IsEnabled => Config.IsEnabled.Value;
 
 		#endregion IFeature
+
+		#region Configuration
+
+		protected TConfig Config { get; }
+
+		#endregion Configuration
 	}
 }

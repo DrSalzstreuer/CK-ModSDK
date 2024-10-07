@@ -9,28 +9,23 @@ namespace CK_QOL.Features.ItemPickUpNotifier
 	/// </summary>
 	internal sealed class ItemPickUpNotifierConfig : ConfigBase<ItemPickUpNotifier>
 	{
-		public ItemPickUpNotifierConfig(ItemPickUpNotifier feature) : base(feature)
+		protected override bool DefaultIsEnabled => true;
+		internal ConfigEntry<float> AggregateDelay { get; private set; }
+
+		internal override void Initialize(ItemPickUpNotifier feature)
 		{
+			base.Initialize(feature);
+			
+			AggregateDelay = ApplyAggregateDelay();
 		}
 
-		/// <summary>
-		///     Overrides the default enabled value for <see cref="ItemPickUpNotifier" />.
-		/// </summary>
-		protected override bool DefaultIsEnabled => true;
-
-		/// <summary>
-		///     Applies the aggregate delay setting for ItemPickUpNotifier.
-		/// </summary>
-		/// <returns>The delay in seconds for aggregating item pickups before showing notifications.</returns>
-		public float ApplyAggregateDelay()
+		private ConfigEntry<float> ApplyAggregateDelay()
 		{
 			var acceptableValues = new AcceptableValueRange<float>(1f, 10f);
 			var description = new ConfigDescription("The delay in seconds to aggregate picked-up items before displaying the notification.", acceptableValues);
 			var definition = new ConfigDefinition(Feature.Name, nameof(Feature.AggregateDelay));
 
-			var entry = Config.Bind(definition, 2f, description);
-
-			return entry.Value;
+			return Config.Bind(definition, 2f, description);
 		}
 	}
 }

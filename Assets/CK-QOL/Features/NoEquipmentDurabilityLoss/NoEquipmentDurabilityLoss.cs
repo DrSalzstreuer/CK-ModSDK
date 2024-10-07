@@ -6,14 +6,8 @@ namespace CK_QOL.Features.NoEquipmentDurabilityLoss
 	///     Provides the "No Equipment Durability Loss" feature, which ensures that equipment no longer loses durability
 	///     during gameplay.
 	/// </summary>
-	internal sealed class NoEquipmentDurabilityLoss : FeatureBase<NoEquipmentDurabilityLoss>
+	internal sealed class NoEquipmentDurabilityLoss : FeatureBase<NoEquipmentDurabilityLoss, NoEquipmentDurabilityLossConfig>
 	{
-		public NoEquipmentDurabilityLoss()
-		{
-			var config = new NoEquipmentDurabilityLossConfig(this);
-			IsEnabled = config.ApplyIsEnabled();
-		}
-
 		#region IFeature
 
 		public override string Name => nameof(NoEquipmentDurabilityLoss);

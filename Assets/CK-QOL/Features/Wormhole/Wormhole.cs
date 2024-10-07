@@ -10,18 +10,16 @@ namespace CK_QOL.Features.Wormhole
 	///     The feature utilizes a configurable system where the required amount of Ancient Gemstones can be adjusted via the <see cref="WormholeConfig" /> class.
 	///     By default, the player needs two Ancient Gemstones per teleportation, but this can be changed in the configuration.
 	/// </remarks>
-	internal sealed class Wormhole : FeatureBase<Wormhole>
+	internal sealed class Wormhole : FeatureBase<Wormhole, WormholeConfig>
 	{
-		/// <summary>
-		///     Initializes a new instance of the <see cref="Wormhole" /> class and applies the necessary configuration settings.
-		/// </summary>
-		public Wormhole()
-		{
-			var config = new WormholeConfig(this);
-			IsEnabled = config.ApplyIsEnabled();
-			RequiredAncientGemstones = config.ApplyRequiredAncientGemstones();
-			AllMarkersAllowed = config.ApplyAllMarkersAllowed();
-		}
+		#region IFeature
+
+		public override string Name => nameof(Wormhole);
+		public override string DisplayName => "Wormhole";
+		public override string Description => "Allows the player to teleport to other players.";
+		public override FeatureType FeatureType => FeatureType.Client;
+
+		#endregion IFeature
 
 		#region Configuration
 
@@ -29,34 +27,10 @@ namespace CK_QOL.Features.Wormhole
 		///     Gets the number of Ancient Gemstones required for each teleportation.
 		///     This value is configurable and defaults to 3 if not set in the configuration.
 		/// </summary>
-		internal int RequiredAncientGemstones { get; }
+		internal int RequiredAncientGemstones => Config.RequiredAncientGemstones.Value;
 
-		internal bool AllMarkersAllowed { get; }
+		internal bool AllMarkersAllowed => Config.AllMarkersAllowed.Value;
 
 		#endregion Configuration
-
-		#region IFeature
-
-		/// <summary>
-		///     Gets the name of the feature, used for internal identification.
-		/// </summary>
-		public override string Name => nameof(Wormhole);
-
-		/// <summary>
-		///     Gets the display name of the feature, used in UI elements.
-		/// </summary>
-		public override string DisplayName => "Wormhole";
-
-		/// <summary>
-		///     Gets the description of the feature, providing a brief overview of its functionality.
-		/// </summary>
-		public override string Description => "Allows the player to teleport to other players.";
-
-		/// <summary>
-		///     Defines the type of the feature, in this case, a client-side feature.
-		/// </summary>
-		public override FeatureType FeatureType => FeatureType.Client;
-
-		#endregion IFeature
 	}
 }

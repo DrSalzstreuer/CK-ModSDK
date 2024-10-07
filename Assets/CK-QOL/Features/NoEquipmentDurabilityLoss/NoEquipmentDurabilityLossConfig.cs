@@ -8,13 +8,6 @@ namespace CK_QOL.Features.NoEquipmentDurabilityLoss
 	/// </summary>
 	internal sealed class NoEquipmentDurabilityLossConfig : ConfigBase<NoEquipmentDurabilityLoss>
 	{
-		public NoEquipmentDurabilityLossConfig(NoEquipmentDurabilityLoss feature) : base(feature)
-		{
-		}
-
-		/// <summary>
-		///     Overrides the default enabled value for <see cref="NoEquipmentDurabilityLoss" />.
-		/// </summary>
 		protected override bool DefaultIsEnabled => false;
 	}
 }

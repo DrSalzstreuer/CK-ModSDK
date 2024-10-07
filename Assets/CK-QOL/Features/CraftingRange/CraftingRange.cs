@@ -15,19 +15,8 @@ namespace CK_QOL.Features.CraftingRange
 	///     The <see cref="CraftingRangeConfig" /> class manages the configuration for this feature, including the maximum
 	///     range and the maximum number of chests that can be included.
 	/// </remarks>
-	internal sealed class CraftingRange : FeatureBase<CraftingRange>
+	internal sealed class CraftingRange : FeatureBase<CraftingRange, CraftingRangeConfig>
 	{
-		/// <summary>
-		///     Initializes a new instance of the <see cref="CraftingRange" /> class and applies the configuration settings.
-		/// </summary>
-		public CraftingRange()
-		{
-			var config = new CraftingRangeConfig(this);
-			IsEnabled = config.ApplyIsEnabled();
-			MaxRange = config.ApplyMaxRange();
-			MaxChests = config.ApplyMaxChests();
-		}
-
 		/// <summary>
 		///     Gets the list of chests that are currently within the crafting range.
 		/// </summary>
@@ -62,8 +51,8 @@ namespace CK_QOL.Features.CraftingRange
 
 		#region Configuration
 
-		internal float MaxRange { get; }
-		internal int MaxChests { get; }
+		internal float MaxRange => Config.MaxRange.Value;
+		internal int MaxChests => Config.MaxChests.Value;
 
 		#endregion Configuration
 	}

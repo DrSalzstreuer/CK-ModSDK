@@ -17,18 +17,8 @@ namespace CK_QOL.Features.ChestAutoUnlock
 	///     all the required items to unlock the chest and moves the required items from the player's inventory to the chest's
 	///     inventory. The feature also depends on whether the chest has valid inventory slot requirements.
 	/// </remarks>
-	internal sealed class ChestAutoUnlock : FeatureBase<ChestAutoUnlock>
+	internal sealed class ChestAutoUnlock : FeatureBase<ChestAutoUnlock, ChestAutoUnlockConfig>
 	{
-		/// <summary>
-		///     Initializes a new instance of the <see cref="ChestAutoUnlock" /> class and applies the configuration settings.
-		/// </summary>
-		public ChestAutoUnlock()
-		{
-			var config = new ChestAutoUnlockConfig(this);
-			IsEnabled = config.ApplyIsEnabled();
-		}
-
-		/// <inheritdoc />
 		public override bool CanExecute()
 		{
 			return base.CanExecute() && Manager.main.player?.playerInventoryHandler != null && Manager.ui.isChestInventoryUIShowing &&
@@ -111,16 +101,9 @@ namespace CK_QOL.Features.ChestAutoUnlock
 
 		#region IFeature
 
-		/// <inheritdoc />
 		public override string Name => nameof(ChestAutoUnlock);
-
-		/// <inheritdoc />
 		public override string DisplayName => "Chest Auto Unlock";
-
-		/// <inheritdoc />
 		public override string Description => "Allows quick unlocking of locked chests by using available keys.";
-
-		/// <inheritdoc />
 		public override FeatureType FeatureType => FeatureType.Client;
 
 		#endregion IFeature

@@ -6,14 +6,8 @@ namespace CK_QOL.Features.NoDeathPenalty
 	///     Provides the "No Death Penalty" feature, which removes the default behavior where the player's inventory is lost
 	///     upon death. With this feature enabled, the player's inventory will remain intact after dying.
 	/// </summary>
-	internal sealed class NoDeathPenalty : FeatureBase<NoDeathPenalty>
+	internal sealed class NoDeathPenalty : FeatureBase<NoDeathPenalty, NoDeathPenaltyConfig>
 	{
-		public NoDeathPenalty()
-		{
-			var config = new NoDeathPenaltyConfig(this);
-			IsEnabled = config.ApplyIsEnabled();
-		}
-
 		#region IFeature
 
 		public override string Name => nameof(NoDeathPenalty);

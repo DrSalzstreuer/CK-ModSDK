@@ -8,13 +8,6 @@ namespace CK_QOL.Features.ChestAutoUnlock
 	/// </summary>
 	internal sealed class ChestAutoUnlockConfig : ConfigBase<ChestAutoUnlock>
 	{
-		public ChestAutoUnlockConfig(ChestAutoUnlock feature) : base(feature)
-		{
-		}
-
-		/// <summary>
-		///     Overrides the default enabled value for <see cref="ChestAutoUnlockConfig" />.
-		/// </summary>
 		protected override bool DefaultIsEnabled => true;
 	}
 }

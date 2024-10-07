@@ -16,24 +16,16 @@ namespace CK_QOL.Features.QuickEat
 	///     The "Quick Eat" feature helps players quickly consume food without manually searching their inventory.
 	///     It sorts available items based on whether they are cooked food, ensuring the most beneficial items are consumed
 	///     first.
-	///     This class inherits from <see cref="QuickActionFeatureBase{TFeature}" /> to provide common functionality for item
+	///     This class inherits from <see cref="FeatureBase{TFeature, TConfig}" /> to provide common functionality for item
 	///     consumption.
 	/// </remarks>
-	internal sealed class QuickEat : FeatureBase<QuickEat>, IKeyBindableFeature
+	internal sealed class QuickEat : FeatureBase<QuickEat, QuickEatConfig>, IKeyBindableFeature
 	{
 		private int _fromSlotIndex = -1;
 		private int _previousSlotIndex = -1;
 
-		/// <summary>
-		///     Initializes a new instance of the <see cref="QuickEat" /> class, applying configuration settings and binding
-		///     the key for the eating action.
-		/// </summary>
 		public QuickEat()
 		{
-			var config = new QuickEatConfig(this);
-			IsEnabled = config.ApplyIsEnabled();
-			EquipmentSlotIndex = config.ApplyEquipmentSlotIndex();
-
 			SetupKeyBindings();
 		}
 
@@ -194,25 +186,16 @@ namespace CK_QOL.Features.QuickEat
 
 		#region IFeature
 
-		/// <inheritdoc />
 		public override string Name => nameof(QuickEat);
-
-		/// <inheritdoc />
 		public override string DisplayName => "Quick Eat";
-
-		/// <inheritdoc />
 		public override string Description => "Quickly equips or switches the preferred eatable item, consumes it, and swaps back to the previous item.";
-
-		/// <inheritdoc />
 		public override FeatureType FeatureType => FeatureType.Client;
 
 		#endregion IFeature
 
 		#region Configurations
 
-		internal int EquipmentSlotIndex { get; }
-
-		/// <inheritdoc />
+		internal int EquipmentSlotIndex => Config.EquipmentSlotIndex.Value;
 		public string KeyBindName => $"{ModSettings.ShortName}_{Name}";
 
 		public void SetupKeyBindings()
