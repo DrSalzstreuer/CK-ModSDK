@@ -1,4 +1,4 @@
-namespace CK_QOL.Core
+namespace CK_QOL.ConfigUI.Core
 {
 	/// <summary>
 	///     Contains metadata and constant settings for the CK QOL mod, such as the mod's name, version, author, and
@@ -15,26 +15,26 @@ namespace CK_QOL.Core
 		/// <summary>
 		///     The full name of the mod.
 		/// </summary>
-		internal const string Name = "CK QOL";
+		internal const string Name = "CK QOL ConfigUI";
 
 		/// <summary>
 		///     The short name of the mod, typically used in logging or as a prefix.
 		/// </summary>
-		internal const string ShortName = "CK_QOL";
+		internal const string ShortName = "CK_QOL_ConfigUI";
 
 		/// <summary>
 		///     The current version of the mod.
 		/// </summary>
-		public const string Version = "1.10.0";
+		public const string Version = "1.0.0";
 
 		/// <summary>
 		///     The author of the mod.
 		/// </summary>
 		internal const string Author = "DrSalzstreuer";
-
+		
 		/// <summary>
 		///     The contributors who have worked on or helped with the mod.
 		/// </summary>
-		internal const string Contributors = "spintermind, Fehdra & Trolxu";
+		internal const string SpecialThanks = "Limoka & ]I Use Mods, So Sue Me";
 	}
 }

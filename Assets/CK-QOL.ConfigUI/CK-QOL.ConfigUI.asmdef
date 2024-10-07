@@ -1,6 +1,6 @@
 {
-    "name": "CK-QOL",
-    "rootNamespace": "CK_QOL",
+    "name": "CK-QOL.ConfigUI",
+    "rootNamespace": "CK_QOL.ConfigUI",
     "references": [
         "Unity.Burst",
         "Unity.Collections",
@@ -16,12 +16,8 @@
         "Unity.Properties",
         "Unity.Transforms",
         "PugMod.SDK",
-        "",
-        "",
         "CoreLib",
-        "CoreLib.Localization",
-        "CoreLib.RewiredExtension",
-        "CK-QOL.ConfigUI"
+        "CoreLib.RewiredExtension"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

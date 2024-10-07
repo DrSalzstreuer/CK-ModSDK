@@ -37,8 +37,7 @@ namespace CK_QOL.Core.Config
 		/// </returns>
 		public bool ApplyIsEnabled()
 		{
-			var acceptableValues = new AcceptableValueList<bool>(true, false);
-			var description = new ConfigDescription($"Enable the '{Feature.DisplayName}' ({Feature.FeatureType}) feature? {Feature.Description}", acceptableValues);
+			var description = new ConfigDescription($"Enable the '{Feature.DisplayName}' ({Feature.FeatureType}) feature? {Feature.Description}");
 			var definition = new ConfigDefinition(Feature.Name, nameof(Feature.IsEnabled));
 
 			var entry = Config.Bind(definition, DefaultIsEnabled, description);
