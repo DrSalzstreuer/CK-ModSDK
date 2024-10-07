@@ -22,11 +22,6 @@ MonoBehaviour:
     requiredOn: 3
     files:
     - path: Localization/Localization.csv
-    - path: Scripts/UI/WindowDragHandler.cs
-    - path: Scripts/UI/Elements/SectionElement.cs
-    - path: Scripts/UI/Elements/ModElement.cs
-    - path: Scripts/UI/Elements/ConfigElement.cs
-    - path: Scripts/UI/ConfigUI.cs
     - path: Scripts/Features/Wormhole/WormholeConfig.cs
     - path: Scripts/Features/Wormhole/Wormhole.cs
     - path: Scripts/Features/Wormhole/Patches/MapMarkerUIElementPatches.cs
@@ -57,11 +52,11 @@ MonoBehaviour:
     - path: Scripts/Features/ChestAutoUnlock/ChestAutoUnlockConfig.cs
     - path: Scripts/Features/ChestAutoUnlock/ChestAutoUnlock.cs
     - path: Scripts/Entry.cs
-    - path: Scripts/Core/Patches/TitleScreenAnimatorPatches.cs
     - path: Scripts/Core/Patches/ItemDiscoveryUIPatches.cs
     - path: Scripts/Core/Patches/ItemDiscoveryTextUIPatches.cs
     - path: Scripts/Core/ModSettings.cs
     - path: Scripts/Core/ModLogger.cs
+    - path: Scripts/Core/Helpers/TransformHelpers.cs
     - path: Scripts/Core/Helpers/TextHelper.cs
     - path: Scripts/Core/Helpers/MathHelpers.cs
     - path: Scripts/Core/Helpers/InventoryHandlerHelper.cs
@@ -87,7 +82,7 @@ MonoBehaviour:
     - modName: CoreLib.RewiredExtension
       required: 1
     - modName: CK-QOL.ConfigUI
-      required: 1
+      required: 0
   modPath: Assets\CK-QOL
   buildBurst: 1
   buildLinux: 1

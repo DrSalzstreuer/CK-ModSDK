@@ -22,10 +22,12 @@ MonoBehaviour:
     requiredOn: 0
     files:
     - path: Scripts/UI/WindowDragHandler.cs
+    - path: Scripts/UI/InputValidator.cs
     - path: Scripts/UI/Elements/SectionElement.cs
     - path: Scripts/UI/Elements/ModElement.cs
     - path: Scripts/UI/Elements/ConfigElement.cs
     - path: Scripts/UI/ConfigUI.cs
+    - path: Scripts/UI/CollapsiblePanel.cs
     - path: Scripts/Entry.cs
     - path: Scripts/Core/Patches/TitleScreenAnimatorPatches.cs
     - path: Scripts/Core/ModSettings.cs

@@ -31,13 +31,13 @@ namespace CK_QOL.ConfigUI.UI
 		public GameObject togglePrefab;
 
 		private readonly Dictionary<string, List<ConfigFile>> _configFiles = new Dictionary<string, List<ConfigFile>>();
-		private static bool IsMenuOpen;
+		private static bool _isMenuOpen;
 
 		[HarmonyPrefix]
 		[HarmonyPatch(typeof(Cursor), "set_visible")]
 		public static bool Cursor_set_visible(bool value)
 		{
-			return value || IsMenuOpen != true;
+			return value || _isMenuOpen != true;
 		}
 
 		public void ToggleUI()
@@ -54,8 +54,8 @@ namespace CK_QOL.ConfigUI.UI
 
 		public void ShowUI()
 		{
-			IsMenuOpen = true;
-			
+			_isMenuOpen = true;
+
 			uiContainerElement.SetActive(true);
 			Cursor.lockState = CursorLockMode.None;
 			Cursor.visible = true;
@@ -65,8 +65,8 @@ namespace CK_QOL.ConfigUI.UI
 
 		public void HideUI()
 		{
-			IsMenuOpen = false;
-			
+			_isMenuOpen = false;
+
 			uiContainerElement.SetActive(false);
 			StartCoroutine(RebuildLayout());
 		}
@@ -96,7 +96,7 @@ namespace CK_QOL.ConfigUI.UI
 			foreach (var configFile in ConfigFile.AllConfigFilesReadOnly)
 			{
 				var modName = ConfigFile.GetDirectoryName(configFile.ConfigFilePath);
-			
+
 				if (_configFiles.TryGetValue(modName, out var configFiles))
 				{
 					configFiles.Add(configFile);
@@ -110,19 +110,30 @@ namespace CK_QOL.ConfigUI.UI
 
 		private void RenderUI()
 		{
+			var modIndex = 0;
+
 			foreach (var mod in _configFiles)
 			{
-				RenderMod(mod.Key, mod.Value);
+				var useAlternativeColor = modIndex % 2 == 0;
+
+				RenderMod(mod.Key, mod.Value, useAlternativeColor);
+				modIndex++;
 			}
 
 			SetupMainCanvas();
 			StartCoroutine(RebuildLayout());
 		}
 
-		private void RenderMod(string modName, List<ConfigFile> configFiles)
+		private void RenderMod(string modName, List<ConfigFile> configFiles, bool useAlternativeColor = false)
 		{
 			var modElement = Instantiate(modPrefab, modContainerElement.transform).GetComponent<ModElement>();
 			modElement.nameElement.GetComponent<Text>().text = modName;
+
+			if (useAlternativeColor)
+			{
+				var currentColor = modElement.GetComponent<Image>().color;
+				modElement.GetComponent<Image>().color = new Color(currentColor.r, currentColor.g, currentColor.b, 0f);
+			}
 
 			foreach (var configFile in configFiles)
 			{
@@ -157,7 +168,11 @@ namespace CK_QOL.ConfigUI.UI
 
 		private void CreateInputElement(ConfigElement configElement, ConfigEntryBase configEntry)
 		{
-			if (configEntry.Description == ConfigDescription.Empty || configEntry.Description.AcceptableValues == null)
+			if (configEntry.SettingType == typeof(bool))
+			{
+				CreateToggle(configElement, configEntry);
+			}
+			else if (configEntry.Description == ConfigDescription.Empty || configEntry.Description.AcceptableValues == null)
 			{
 				CreateInputField(configElement, configEntry);
 			}
@@ -170,9 +185,8 @@ namespace CK_QOL.ConfigUI.UI
 		private void CreateInputField(ConfigElement configElement, ConfigEntryBase configEntry)
 		{
 			var inputElement = Instantiate(inputFieldPrefab, configElement.inputContainerElement.transform).GetComponent<InputField>();
-			inputElement.text = configEntry.BoxedValue.ToString();
-
-			inputElement.onValueChanged.AddListener(value => { configEntry.SetSerializedValue(value.ToString(CultureInfo.InvariantCulture)); });
+			inputElement.gameObject.AddComponent<InputValidator>().ConfigEntry = configEntry;
+			inputElement.text = configEntry.GetSerializedValue();
 		}
 
 		private void CreateSpecificInputElement(ConfigElement configElement, ConfigEntryBase configEntry)
@@ -188,11 +202,6 @@ namespace CK_QOL.ConfigUI.UI
 
 				case AcceptableValueRange<float> floatRange:
 					CreateFloatSlider(configElement, configEntry, floatRange);
-
-					break;
-
-				case AcceptableValueList<bool> boolList:
-					CreateToggle(configElement, configEntry);
 
 					break;
 
@@ -212,8 +221,8 @@ namespace CK_QOL.ConfigUI.UI
 			inputElement.minValue = intRange.MinValue;
 			inputElement.maxValue = intRange.MaxValue;
 			inputElement.wholeNumbers = true;
-			inputElement.value = Convert.ToSingle(configEntry.BoxedValue);
-			currentValueElement.text = configEntry.BoxedValue.ToString();
+			inputElement.value = Convert.ToSingle(configEntry.GetSerializedValue());
+			currentValueElement.text = configEntry.GetSerializedValue();
 
 			inputElement.onValueChanged.AddListener(value =>
 			{
@@ -231,8 +240,8 @@ namespace CK_QOL.ConfigUI.UI
 			inputElement.minValue = floatRange.MinValue;
 			inputElement.maxValue = floatRange.MaxValue;
 			inputElement.wholeNumbers = false;
-			inputElement.value = Convert.ToSingle(configEntry.BoxedValue);
-			currentValueElement.text = configEntry.BoxedValue.ToString();
+			inputElement.value = Convert.ToSingle(configEntry.GetSerializedValue());
+			currentValueElement.text = configEntry.GetSerializedValue();
 
 			inputElement.onValueChanged.AddListener(value =>
 			{
@@ -244,7 +253,7 @@ namespace CK_QOL.ConfigUI.UI
 		private void CreateToggle(ConfigElement configElement, ConfigEntryBase configEntry)
 		{
 			var inputElement = Instantiate(togglePrefab, configElement.inputContainerElement.transform).GetComponent<Toggle>();
-			inputElement.isOn = Convert.ToBoolean(configEntry.BoxedValue);
+			inputElement.isOn = Convert.ToBoolean(configEntry.GetSerializedValue());
 
 			inputElement.onValueChanged.AddListener(value => { configEntry.SetSerializedValue(value.ToString(CultureInfo.InvariantCulture)); });
 		}
@@ -258,7 +267,7 @@ namespace CK_QOL.ConfigUI.UI
 				var values = Enum.GetNames(configEntry.SettingType);
 				inputElement.options.AddRange(values.Select(value => new Dropdown.OptionData(value)));
 
-				var currentValue = configEntry.BoxedValue.ToString();
+				var currentValue = configEntry.GetSerializedValue();
 				inputElement.value = Array.IndexOf(values, currentValue);
 
 				inputElement.onValueChanged.AddListener(index =>
@@ -274,7 +283,7 @@ namespace CK_QOL.ConfigUI.UI
 
 				inputElement.options.AddRange(values.Select(value => new Dropdown.OptionData(value.Trim())));
 
-				var currentValue = configEntry.BoxedValue.ToString();
+				var currentValue = configEntry.GetSerializedValue();
 				inputElement.value = Array.IndexOf(values, currentValue);
 
 				inputElement.onValueChanged.AddListener(index =>
@@ -304,7 +313,7 @@ namespace CK_QOL.ConfigUI.UI
 			FindObjectOfType<WindowDragHandler>().Initialize(mainCanvas);
 		}
 
-		private IEnumerator RebuildLayout()
+		public IEnumerator RebuildLayout()
 		{
 			yield return new WaitForEndOfFrame();
 

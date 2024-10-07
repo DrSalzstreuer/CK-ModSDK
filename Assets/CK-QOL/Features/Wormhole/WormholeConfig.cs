@@ -40,8 +40,7 @@ namespace CK_QOL.Features.Wormhole
 		
 		public bool ApplyAllMarkersAllowed()
 		{
-			var acceptableValues = new AcceptableValueList<bool>(true, false);
-			var description = new ConfigDescription("Are all markers allowed for teleportation?", acceptableValues);
+			var description = new ConfigDescription("Are all markers allowed for teleportation?");
 			var definition = new ConfigDefinition(Feature.Name, nameof(Feature.AllMarkersAllowed));
 
 			var entry = Config.Bind(definition, false, description);

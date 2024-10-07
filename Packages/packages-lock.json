@@ -8,14 +8,14 @@
         "com.unity.editorcoroutines": "1.0.0",
         "ck.modding.markdig": "0.33.0"
       },
-      "hash": "99702440f1fd0e4e89307273ef384f9ce09a76fc"
+      "hash": "3cbbebeb8c20e8ae372ff4cd49a948a745102816"
     },
     "ck.modding.markdig": {
       "version": "https://github.com/CoreKeeperMods/CoreLib.git?path=/Assets/Markdig#main",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "99702440f1fd0e4e89307273ef384f9ce09a76fc"
+      "hash": "3cbbebeb8c20e8ae372ff4cd49a948a745102816"
     },
     "ck.modding.sdk-extensions": {
       "version": "https://github.com/CoreKeeperMods/CoreLib.git?path=/Assets/SDKExtensions#main",
@@ -25,7 +25,7 @@
         "com.unity.editorcoroutines": "1.0.0",
         "ck.modding.markdig": "0.33.0"
       },
-      "hash": "99702440f1fd0e4e89307273ef384f9ce09a76fc"
+      "hash": "3cbbebeb8c20e8ae372ff4cd49a948a745102816"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
@@ -125,15 +125,6 @@
       "source": "registry",
       "dependencies": {
         "com.unity.ext.nunit": "1.0.6"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.ide.visualstudio": {
-      "version": "2.0.22",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.test-framework": "1.1.9"
       },
       "url": "https://packages.unity.com"
     },

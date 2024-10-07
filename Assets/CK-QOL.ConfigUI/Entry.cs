@@ -50,7 +50,7 @@ namespace CK_QOL.ConfigUI
 
 		private void InitializeModInfo()
 		{
-			ModLogger.Info($"{ModSettings.Name} v{ModSettings.Version} by {ModSettings.Author}");
+			ModLogger.Info($"{ModSettings.Name} v{ModSettings.Version} by {ModSettings.Author} with special thanks to {ModSettings.SpecialThanks}");
 
 			ModInfo = this.GetModInfo();
 			if (ModInfo is null)
