@@ -25,7 +25,7 @@ namespace CK_QOL.ConfigUI.Core
 		/// <summary>
 		///     The current version of the mod.
 		/// </summary>
-		public const string Version = "1.0.1";
+		public const string Version = "1.0.2";
 
 		/// <summary>
 		///     The author of the mod.
@@ -35,6 +35,6 @@ namespace CK_QOL.ConfigUI.Core
 		/// <summary>
 		///     The contributors who have worked on or helped with the mod.
 		/// </summary>
-		internal const string SpecialThanks = "Limoka & ]I Use Mods, So Sue Me";
+		internal const string SpecialThanks = "Limoka & I Use Mods, So Sue Me";
 	}
 }

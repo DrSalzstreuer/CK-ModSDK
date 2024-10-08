@@ -41,11 +41,13 @@ namespace CK_QOL.ConfigUI
 
 		public void Update()
 		{
-			if (RewiredPlayer.GetButtonDown(ModSettings.ShortName))
+			if (!RewiredPlayer.GetButtonDown(ModSettings.ShortName))
 			{
-				var configUI = Object.FindAnyObjectByType<UI.ConfigUI>();
-				configUI?.ToggleUI();
+				return;
 			}
+
+			var configUI = Object.FindAnyObjectByType<UI.ConfigUI>();
+			configUI?.ToggleUI();
 		}
 
 		private void InitializeModInfo()

@@ -80,14 +80,16 @@ namespace CK_QOL.ConfigUI.UI
 		{
 			LoadConfigs();
 			RenderUI();
+			SetupMainCanvas();
+			StartCoroutine(RebuildLayout());
 			HideUI();
 		}
 
 		private void Update()
 		{
-			if (Input.GetMouseButton(0))
+			if (_isMenuOpen && Input.GetMouseButton(0))
 			{
-				Manager.input.DisableInput(1);
+				Manager.input.DisableInput(0.1f);
 			}
 		}
 
@@ -119,9 +121,6 @@ namespace CK_QOL.ConfigUI.UI
 				RenderMod(mod.Key, mod.Value, useAlternativeColor);
 				modIndex++;
 			}
-
-			SetupMainCanvas();
-			StartCoroutine(RebuildLayout());
 		}
 
 		private void RenderMod(string modName, List<ConfigFile> configFiles, bool useAlternativeColor = false)
@@ -303,9 +302,11 @@ namespace CK_QOL.ConfigUI.UI
 				mainCanvas = canvasObject.AddComponent<Canvas>();
 				mainCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
 				mainCanvas.sortingOrder = 1337;
+				
 				var mainCanvasScaler = canvasObject.AddComponent<CanvasScaler>();
 				mainCanvasScaler.referenceResolution = new Vector2(1280, 720);
 				mainCanvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+				
 				canvasObject.AddComponent<GraphicRaycaster>();
 				
 				DontDestroyOnLoad(mainCanvas);

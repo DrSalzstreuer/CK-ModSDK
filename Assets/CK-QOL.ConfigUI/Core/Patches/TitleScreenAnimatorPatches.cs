@@ -10,7 +10,7 @@ namespace CK_QOL.ConfigUI.Core.Patches
 		[HarmonyPatch(nameof(OpenMenu))]
 		public static void OpenMenu()
 		{
-			AssetHelper.LoadAndInstantiatePrefab("ConfigUI");
+			AssetHelper.LoadAndInstantiatePrefab(nameof(ConfigUI));
 		}
 	}
 }
