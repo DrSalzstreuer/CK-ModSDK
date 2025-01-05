@@ -83,5 +83,9 @@ MonoBehaviour:
     - modName: CK-QOL.ConfigUI
       required: 0
   modPath: Assets\CK-QOL
-  buildBurst: 1
+  forceReimport: 1
+  buildBundles: 1
+  cacheBundles: 0
   buildLinux: 1
+  assets: []
+  lastBuildLinux: 0

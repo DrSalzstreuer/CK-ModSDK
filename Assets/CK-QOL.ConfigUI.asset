@@ -42,5 +42,31 @@ MonoBehaviour:
     - modName: CoreLib.RewiredExtension
       required: 1
   modPath: Assets\CK-QOL.ConfigUI
-  buildBurst: 1
+  forceReimport: 1
+  buildBundles: 1
+  cacheBundles: 0
   buildLinux: 1
+  assets:
+  - path: Assets/CK-QOL.ConfigUI/CK-QOL.png
+    hash: 9CF9B984F7D28D4E70B8AFB09A9155D8D077574A3D8F35A0C2914104EB60F3D0
+  - path: Assets/CK-QOL.ConfigUI/Prefabs/ConfigUI.prefab
+    hash: 79F8919C725369349FB577BD8B8018ACA427BBC16F5984528E1D34B0ED4B18F6
+  - path: Assets/CK-QOL.ConfigUI/Prefabs/Elements/ConfigElement.prefab
+    hash: 4E2C37634AED3976400F0526BC64F049BDC7FD4BD53519732E31A28F6A1ED747
+  - path: Assets/CK-QOL.ConfigUI/Prefabs/Elements/Inputs/InputElement_Dropdown.prefab
+    hash: 8D327C871C6D0113575CADE38A6E4EC10CD07AF0EFB7276CB5F893756A14A91B
+  - path: Assets/CK-QOL.ConfigUI/Prefabs/Elements/Inputs/InputElement_InputField.prefab
+    hash: ADB3FA4861C04E2CA63B7B7D9568C16EF567ADDB9B834BFD7F2E66D378826B4C
+  - path: Assets/CK-QOL.ConfigUI/Prefabs/Elements/Inputs/InputElement_Slider.prefab
+    hash: 0DEFB52F463FB0976A2C9510953A0D32A2BF48CA3DAB41E33C4A4D9D4AD1B9B4
+  - path: Assets/CK-QOL.ConfigUI/Prefabs/Elements/Inputs/InputElement_Toggle.prefab
+    hash: A9716089EC7189925FA7E1725418D651FF20088259AC8B817C7D6C9B1942ECEA
+  - path: Assets/CK-QOL.ConfigUI/Prefabs/Elements/ModElement.prefab
+    hash: B7A1A7F8876F116F5578568558DDBE5A209DD08CC1C0337CEF5876E0A6AC2638
+  - path: Assets/CK-QOL.ConfigUI/Prefabs/Elements/SectionElement.prefab
+    hash: 5F515DAF49CCA3DD439C7F2281FB4EF47CF9F9F57106D030EC021CCD0A2DD507
+  - path: Assets/CK-QOL.ConfigUI/Preview/Image0.png
+    hash: F8ECC17F757E44753A7EC0D43DC0A1F882833805642B3F873924626AECD3F047
+  - path: Assets/CK-QOL.ConfigUI/Preview/Image1.png
+    hash: 0E1ED31EDC9D3DC8ACF5454BA99F1092627CBE138F8AA3716977CBE8772EC3A1
+  lastBuildLinux: 1
